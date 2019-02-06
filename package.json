@@ -1,0 +1,17 @@
+{
+  "name": "squeaky-clean",
+  "version": "0.0.1",
+  "description": "Convert SASS files into CSS modules compatible files",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naganowl/squeaky-clean.git"
+  },
+  "author": "Alan Wong <naganowl@gmail.com>",
+  "contributors": [
+    {
+      "name": "Juan Carlos Medina",
+      "email": "juanca.med@gmail.com"
+    }
+  ],
+  "license": "MIT"
+}
