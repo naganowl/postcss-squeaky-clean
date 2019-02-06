@@ -2,10 +2,10 @@ const fs = require('fs');
 const md5 = require('md5');
 
 const postcss = require('postcss');
-const runShell = require('./helpers/run-shell');
-const directories = require('./helpers/directories');
-const blacklistedClass = require('./helpers/blacklisted-class');
-const isIgnoredSelector = require('./helpers/is-ignored-selector');
+const runShell = require('../helpers/run-shell');
+const directories = require('../helpers/directories');
+const blacklistedClass = require('../helpers/blacklisted-class');
+const isIgnoredSelector = require('../helpers/is-ignored-selector');
 
 function hasCommentException(cssRule) {
   return cssRule.nodes && cssRule.nodes.findIndex((n) => {
