@@ -19,7 +19,7 @@ function logIgnoredSelector(selector, lineNum) {
 
 function addSelectorHash(opts, selector) {
   const { rule, css, theSelectors } = opts;
-  const hasBlacklistedClass = blacklistedClass(selector);
+  const hasBlacklistedClass = blacklistedClass.find(selector);
   const hasException = hasCommentException(rule);
   if (isIgnoredSelector(selector) || selector.includes('-sqkd-') || hasBlacklistedClass || hasException) {
     const lineNumber = rule.source.start.line;
@@ -165,7 +165,12 @@ function cleanSelectorsAcrossFiles(theSelectors) {
   });
 }
 
-module.exports = postcss.plugin('squeakyCleanPlugin', () => {
+module.exports = postcss.plugin('squeakyCleanPlugin', (options = {}) => {
+  blacklistedClass.init({
+    BLACKLIST_CLASSES: options.BLACKLIST_CLASSES,
+    BLACKLIST_PREFIXES: options.BLACKLIST_PREFIXES,
+  });
+
   return function (css) {
     const theSelectors = [];
     cleanCSSFile(css, theSelectors);
