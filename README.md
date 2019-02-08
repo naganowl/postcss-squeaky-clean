@@ -44,3 +44,13 @@ The academically inclined would point towards an [AST](https://en.wikipedia.org/
 1. Additional parsing of class selectors from string tokens extracted from files
 
 To balance delivering results and provide reasonable script runtime, regular expressions are leveraged and have served quite well for the features that have run and the heavy conventions that exist within the files. If performance ever becomes an issue, ASTs can be revisited.
+
+#### Linting
+
+To check for any dangling namespaced selectors, the following command can be run
+
+`squeaky-lint --directoriesPath <FILE_PATH> --pathRoot <FILE_PATH> --composeDir`
+
+where `directoriesPath` points to a module which returns an array of strings denoting file directories to lint
+and `pathRoot` is a file path that's the top level directory of the code to be analyzed
+with `composeDir` being a comma delineated string of the directories that have stylesheets implementing CSS composition
