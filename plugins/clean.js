@@ -3,9 +3,10 @@ const md5 = require('md5');
 
 const postcss = require('postcss');
 const runShell = require('../helpers/run-shell');
-const directories = require('../helpers/directories');
 const blacklistedClass = require('../helpers/blacklisted-class');
 const isIgnoredSelector = require('../helpers/is-ignored-selector');
+
+let directories;
 
 function hasCommentException(cssRule) {
   return cssRule.nodes && cssRule.nodes.findIndex((n) => {
@@ -166,6 +167,7 @@ function cleanSelectorsAcrossFiles(theSelectors) {
 }
 
 module.exports = postcss.plugin('squeakyCleanPlugin', (options = {}) => {
+  directories = options.directories;
   blacklistedClass.init({
     BLACKLIST_CLASSES: options.BLACKLIST_CLASSES,
     BLACKLIST_PREFIXES: options.BLACKLIST_PREFIXES,
