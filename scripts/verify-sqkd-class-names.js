@@ -45,7 +45,7 @@ function stylesheetReduceMethod(stylesheets, selArr, fileFn) {
 }
 
 function parseCmdArgs() {
-  const args = process.argv;
+  const args = [...process.argv];
   const cwd = process.cwd();
   args[0] = null; // To simplify checks if flags are missing
   const directoriesPathIdx = args.indexOf('--directoriesPath');
