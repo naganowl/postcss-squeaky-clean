@@ -51,10 +51,12 @@ function parseCmdArgs() {
   const directoriesPathIdx = args.indexOf('--directoriesPath');
   const pathRootIdx = args.indexOf('--pathRoot');
   const composeDirIdx = args.indexOf('--composeDir');
+  const extIdx = args.indexOf('--ext');
 
   const directoriesPath = args[directoriesPathIdx + 1];
   const pathRootVal = args[pathRootIdx + 1];
   const composeDir = args[composeDirIdx + 1];
+  const ext = args[extIdx + 1];
 
   let directories;
   let pathRoot;
@@ -67,7 +69,7 @@ function parseCmdArgs() {
     pathRoot = path.resolve(cwd, pathRootVal);
   }
 
-  return { directories, pathRoot, composeDir };
+  return { directories, pathRoot, composeDir, ext };
 }
 
 const cmdArgs = parseCmdArgs()
@@ -91,18 +93,12 @@ const definedSqueakyClassNames = stylesheetReduceMethod(stylesheetFiles, [], com
 //
 // Collect all used squeaky cleaned class names
 
-const jsFiles = findAllFilesInDirectories(baseDirectoryPaths, '.js');
-console.log('javascript count', jsFiles.length);
-const coffeeFiles = findAllFilesInDirectories(baseDirectoryPaths, '.coffee');
-console.log('coffee count', coffeeFiles.length);
-const ecoFiles = findAllFilesInDirectories(baseDirectoryPaths, '.eco');
-console.log('eco count', ecoFiles.length);
-const rbFiles = findAllFilesInDirectories(baseDirectoryPaths, '.rb');
-console.log('ruby count', rbFiles.length);
-const erbFiles = findAllFilesInDirectories(baseDirectoryPaths, '.erb');
-console.log('erb count', erbFiles.length);
-const ejsFiles = findAllFilesInDirectories(baseDirectoryPaths, '.ejs');
-console.log('ejs count', ejsFiles.length);
+const fileExts = cmdArgs.ext.split(',');
+const nonStylesheetFiles = fileExts.reduce((memo, fileExt) => {
+  const filesInDir = findAllFilesInDirectories(baseDirectoryPaths, `.${fileExt}`);
+  console.log(`${fileExt} count`, filesInDir.length);
+  return memo.concat(filesInDir);
+}, []);
 
 // To gather composed classes in React code
 const feDirectories = directoryPaths.calculate(cmdArgs.composeDir);
@@ -113,14 +109,6 @@ console.log('react sass count', reactSassFiles.length);
 const reactStylesheetFiles = reactCssFiles.concat(reactSassFiles);
 composedSqueakyClassNames = stylesheetReduceMethod(reactStylesheetFiles, composedSqueakyClassNames, composeFn);
 
-const nonStylesheetFiles = [
-  ...jsFiles,
-  ...coffeeFiles,
-  ...ecoFiles,
-  ...rbFiles,
-  ...erbFiles,
-  ...ejsFiles,
-];
 const usedSqueakyClassNames = uniq(nonStylesheetFiles.reduce(((classNames, filePath) =>
   classNames.concat(getSqueakyClassNames(filePath))
 ), []).concat(composedSqueakyClassNames));

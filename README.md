@@ -54,3 +54,4 @@ To check for any dangling namespaced selectors, the following command can be run
 where `directoriesPath` points to a module which returns an array of strings denoting file directories to lint
 and `pathRoot` is a file path that's the top level directory of the code to be analyzed
 with `composeDir` being a comma delineated string of the directories that have stylesheets implementing CSS composition
+then `ext` can be used with a comma delineated string to specify the extensions for view files to scan for squeaky selectors
