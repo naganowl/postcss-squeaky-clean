@@ -10,9 +10,7 @@ let directories;
 let fileExts;
 
 function hasCommentException(cssRule) {
-  return cssRule.nodes && cssRule.nodes.findIndex((n) => {
-    return n.type === 'comment' && n.text.includes('squeaky-skip');
-  }) !== -1;
+  return cssRule.nodes && cssRule.nodes.findIndex(n => n.type === 'comment' && n.text.includes('squeaky-skip')) !== -1;
 }
 
 function logIgnoredSelector(selector, lineNum) {
@@ -70,9 +68,7 @@ function findFilesWithClass(onlyClass) {
   // `spawnSync` doesn't handle command flags (such as `--include`)
   const fileRE = new RegExp(`.+(\\.(${fileExts}))`, 'g');
   let files = cmd.match(fileRE) || [];
-  files = files.filter((fileName) => {
-    return fileName.indexOf('styleguide') === -1;
-  });
+  files = files.filter(fileName => fileName.indexOf('styleguide') === -1);
   return files;
 }
 
@@ -106,9 +102,7 @@ function replaceContents(contents, onlyClass, hash, file) {
       return classFnBody;
     }
 
-    return classFnBody.split('\n').map((fnLine) => {
-      return fnLine.replace(new RegExp('(.+?[\'"])(.+?)([\'"])', 'g'), replacer);
-    }).join('\n');
+    return classFnBody.split('\n').map(fnLine => fnLine.replace(new RegExp('(.+?[\'"])(.+?)([\'"])', 'g'), replacer)).join('\n');
   };
 
   const ternaryReplacer = (fullLine, prefix, ternary, suffix) => {
@@ -116,9 +110,7 @@ function replaceContents(contents, onlyClass, hash, file) {
       return prefix + ternary + suffix;
     }
 
-    return prefix + ternary.split(':').map((clause) => {
-      return clause.replace(new RegExp('(.+?[\'"])(.+?)([\'"])', 'g'), replacer);
-    }).join(':') + suffix;
+    return prefix + ternary.split(':').map(clause => clause.replace(new RegExp('(.+?[\'"])(.+?)([\'"])', 'g'), replacer)).join(':') + suffix;
   };
 
   const interpolationReplacer = (fullLine, prefix, interpolation, suffix) => {

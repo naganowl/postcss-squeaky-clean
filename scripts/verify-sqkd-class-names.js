@@ -11,7 +11,7 @@ function extractComposeUses(selectorArr, sheetContents) {
   const composedSelectors = sheetContents.match(/composes:[\s\n]+?([\w\n\s-]+)/g);
   if (composedSelectors) {
     composedSelectors.reduce((memo, selectorValue) => {
-      const refSels = selectorValue.split(/\s+/).filter((sel) => { return sel.includes('-sqkd-'); });
+      const refSels = selectorValue.split(/\s+/).filter(sel => sel.includes('-sqkd-'));
       // Mutate the original array
       memo.push(...refSels);
       return memo;
@@ -32,9 +32,7 @@ function getSqueakyClassNames(filePath, contentFn, addClassDot) {
   }
 
   const matches = contents.match(regex) || [];
-  return matches.map((className) => {
-    return className[0] === '.' ? className.slice(1) : className;
-  });
+  return matches.map(className => (className[0] === '.' ? className.slice(1) : className));
 }
 
 function stylesheetReduceMethod(stylesheets, selArr, fileFn) {
@@ -69,11 +67,14 @@ function parseCmdArgs() {
     pathRoot = path.resolve(cwd, pathRootVal);
   }
 
-  return { directories, pathRoot, composeDir, ext };
+  return {
+    directories, pathRoot, composeDir, ext,
+  };
 }
 
-const cmdArgs = parseCmdArgs()
+const cmdArgs = parseCmdArgs();
 const directoryPaths = require('../helpers/directory-paths.js');
+
 directoryPaths.init(cmdArgs);
 const baseDirectoryPaths = directoryPaths.calculate();
 

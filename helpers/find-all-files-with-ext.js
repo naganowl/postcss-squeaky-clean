@@ -15,7 +15,7 @@ module.exports = function findAllFilesWithExt(directoryPath, extension) {
 
     if (stat.isDirectory()) {
       return filePaths.concat(findAllFilesWithExt(filePath, extension));
-    } else if (filePath.includes(extension)) {
+    } if (filePath.includes(extension)) {
       return filePaths.concat(filePath);
     }
 

@@ -18,8 +18,6 @@ module.exports = function collectClasses(styleSelector) {
     return [];
   }
   const classStr = JSON.stringify(parser.parse(selector)).match(/"classNames.*?\[(.*?)\]/g);
-  const selectors = classStr.reduce((memo, classSelector) => {
-    return memo.concat(JSON.parse(classSelector.split(':').pop()));
-  }, []);
+  const selectors = classStr.reduce((memo, classSelector) => memo.concat(JSON.parse(classSelector.split(':').pop())), []);
   return selectors;
 };
