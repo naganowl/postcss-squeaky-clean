@@ -45,6 +45,27 @@ The academically inclined would point towards an [AST](https://en.wikipedia.org/
 
 To balance delivering results and provide reasonable script runtime, regular expressions are leveraged and have served quite well for the features that have run and the heavy conventions that exist within the files. If performance ever becomes an issue, ASTs can be revisited.
 
+#### Usage
+
+There are four plugins for each of the phases which depend on the previous phase (except the `clean` plugin), however each phase leaves the code in a functioning state.
+
+##### `clean` plugin
+
+This adds the namespaces (suffixes) to all selectors and takes the following options:
+
+###### `directories`
+
+An array of strings representing file paths which contain the top level directories which the plugin will recursive analyze for class selectors
+
+###### `fileExts`
+
+A comma, delineated string representing file extensions that will be examined for class selectors within `directories`
+
+###### `blacklistedClasses`
+
+An object with two keys (`BLACKLIST_CLASSES` and `BLACKLIST_PREFIXES`) whose values are both an array of strings which are class selectors (including the period!).
+These selectors will be ignored (skipped from namespacing) in stylesheets. The selectors in `BLACKLIST_PREFIXES` will ignore class selectors that begin with those strings.
+
 #### Linting
 
 To check for any dangling namespaced selectors, the following command can be run
