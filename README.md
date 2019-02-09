@@ -10,7 +10,7 @@ Additionally, note that the squeaky clean parser uses regex to replace classes s
 * `class=whatever` in a scss/css
 * js variable names like: `<FOO>ClassName` in javascript
 * `(add|remove|toggle)Class` in javascript, and any values in the string passed to these method calls will get converted
- 
+
 Additionally, the parser goes after:
 
 * `klasses`
