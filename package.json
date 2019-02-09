@@ -17,7 +17,7 @@
     "squeaky-lint": "./scripts/verify-sqkd-class-names.js"
   },
   "scripts": {
-    "lint": "eslint --no-eslintrc --config airbnb '**/*.js'"
+    "lint": "eslint '**/*.js'"
   },
   "license": "MIT",
   "dependencies": {
