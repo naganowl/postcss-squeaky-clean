@@ -7,6 +7,7 @@ const blacklistedClass = require('../helpers/blacklisted-class');
 const isIgnoredSelector = require('../helpers/is-ignored-selector');
 
 let directories;
+let fileExts;
 
 function hasCommentException(cssRule) {
   return cssRule.nodes && cssRule.nodes.findIndex((n) => {
@@ -67,7 +68,8 @@ function cleanCSSFile(css, theSelectors) {
 function findFilesWithClass(onlyClass) {
   const cmd = runShell('grep', ['-Rl', onlyClass].concat(directories));
   // `spawnSync` doesn't handle command flags (such as `--include`)
-  let files = cmd.match(/.+(\.(coffee|eco|e?rb|jsx|e?js|scss))/g) || [];
+  const fileRE = new RegExp(`.+(\\.(${fileExts}))`, 'g');
+  let files = cmd.match(fileRE) || [];
   files = files.filter((fileName) => {
     return fileName.indexOf('styleguide') === -1;
   });
@@ -168,6 +170,7 @@ function cleanSelectorsAcrossFiles(theSelectors) {
 
 module.exports = postcss.plugin('squeakyCleanPlugin', (options = {}) => {
   directories = options.directories;
+  fileExts = options.fileExts.replace(/,/g, '|');
   blacklistedClass.init({
     BLACKLIST_CLASSES: options.BLACKLIST_CLASSES,
     BLACKLIST_PREFIXES: options.BLACKLIST_PREFIXES,
