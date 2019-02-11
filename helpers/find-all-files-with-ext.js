@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = function findAllFilesWithExt(directoryPath, extension) {
   if (!fs.existsSync(directoryPath)) {
-    console.log('No directory found:', directoryPath);
+    console.log('No directory found:', directoryPath); // eslint-disable-line no-console
     return [];
   }
 

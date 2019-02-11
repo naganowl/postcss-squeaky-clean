@@ -60,7 +60,8 @@ function parseCmdArgs() {
   let pathRoot;
 
   if (directoriesPath && !path.isAbsolute(directoriesPath)) {
-    directories = require(path.resolve(cwd, directoriesPath));
+    // eslint-disable-next-line import/no-dynamic-require
+    directories = require(path.resolve(cwd, directoriesPath)); // eslint-disable-line global-require
   }
 
   if (pathRootVal && !path.isAbsolute(pathRootVal)) {
@@ -82,9 +83,9 @@ const baseDirectoryPaths = directoryPaths.calculate();
 // Collect all defined squeaky cleaned class names
 
 const cssFiles = findAllFilesInDirectories(baseDirectoryPaths, '.css');
-console.log('css count', cssFiles.length);
+console.log('css count', cssFiles.length); // eslint-disable-line no-console
 const sassFiles = findAllFilesInDirectories(baseDirectoryPaths, '.scss');
-console.log('sass count', sassFiles.length);
+console.log('sass count', sassFiles.length); // eslint-disable-line no-console
 
 const stylesheetFiles = cssFiles.concat(sassFiles);
 let composedSqueakyClassNames = [];
@@ -97,18 +98,20 @@ const definedSqueakyClassNames = stylesheetReduceMethod(stylesheetFiles, [], com
 const fileExts = cmdArgs.ext.split(',');
 const nonStylesheetFiles = fileExts.reduce((memo, fileExt) => {
   const filesInDir = findAllFilesInDirectories(baseDirectoryPaths, `.${fileExt}`);
-  console.log(`${fileExt} count`, filesInDir.length);
+  console.log(`${fileExt} count`, filesInDir.length); // eslint-disable-line no-console
   return memo.concat(filesInDir);
 }, []);
 
 // To gather composed classes in React code
 const feDirectories = directoryPaths.calculate(cmdArgs.composeDir);
 const reactCssFiles = findAllFilesInDirectories(feDirectories, '.css');
-console.log('react css count', reactCssFiles.length);
+console.log('react css count', reactCssFiles.length); // eslint-disable-line no-console
 const reactSassFiles = findAllFilesInDirectories(feDirectories, '.scss');
-console.log('react sass count', reactSassFiles.length);
+console.log('react sass count', reactSassFiles.length); // eslint-disable-line no-console
 const reactStylesheetFiles = reactCssFiles.concat(reactSassFiles);
-composedSqueakyClassNames = stylesheetReduceMethod(reactStylesheetFiles, composedSqueakyClassNames, composeFn);
+composedSqueakyClassNames = stylesheetReduceMethod(
+  reactStylesheetFiles, composedSqueakyClassNames, composeFn,
+);
 
 const usedSqueakyClassNames = uniq(nonStylesheetFiles.reduce(((classNames, filePath) =>
   classNames.concat(getSqueakyClassNames(filePath))
@@ -121,8 +124,9 @@ const a = difference(definedSqueakyClassNames, usedSqueakyClassNames);
 const b = difference(usedSqueakyClassNames, definedSqueakyClassNames);
 const unusedClassNames = uniq(a.concat(b)).sort();
 
-console.log('UNUSED SQUEAKY CLASSNAMES', unusedClassNames);
+console.log('UNUSED SQUEAKY CLASSNAMES', unusedClassNames); // eslint-disable-line no-console
 if (unusedClassNames.length > 0) {
+  // eslint-disable-next-line no-console
   console.log('\x1b[31m%s\x1b[0m', 'Please check the usage of the class name(s) mentioned above by running `node script/node/verify-sqkd-class-names.js` locally!');
 }
 process.exit(unusedClassNames.length);

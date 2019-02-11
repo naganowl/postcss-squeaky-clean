@@ -1,4 +1,4 @@
-const CssSelectorParser = require('css-selector-parser').CssSelectorParser;
+const { CssSelectorParser } = require('css-selector-parser');
 const isIgnoredSelector = require('./is-ignored-selector');
 
 const parser = new CssSelectorParser();

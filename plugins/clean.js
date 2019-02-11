@@ -14,7 +14,7 @@ function hasCommentException(cssRule) {
 }
 
 function logIgnoredSelector(selector, lineNum) {
-  console.log(`Ignored selector ${selector} detected on L${lineNum}`);
+  console.log(`Ignored selector ${selector} detected on L${lineNum}`); // eslint-disable-line no-console
 }
 
 function addSelectorHash(opts, selector) {
@@ -150,7 +150,7 @@ function replaceContents(contents, onlyClass, hash, file) {
 function cleanSelectorsAcrossFiles(theSelectors) {
   theSelectors.forEach((fullSelector) => {
     const { onlyClass, hash } = fullSelector;
-    console.log(onlyClass);
+    console.log(onlyClass); // eslint-disable-line no-console
 
     const files = findFilesWithClass(onlyClass);
     files.forEach((file) => {
@@ -161,14 +161,14 @@ function cleanSelectorsAcrossFiles(theSelectors) {
 }
 
 module.exports = postcss.plugin('squeakyCleanPlugin', (options = {}) => {
-  directories = options.directories;
+  directories = options.directories; // eslint-disable-line prefer-destructuring
   fileExts = options.fileExts.replace(/,/g, '|');
   blacklistedClass.init({
     BLACKLIST_CLASSES: options.BLACKLIST_CLASSES,
     BLACKLIST_PREFIXES: options.BLACKLIST_PREFIXES,
   });
 
-  return function (css) {
+  return function main(css) {
     const theSelectors = [];
     cleanCSSFile(css, theSelectors);
     cleanSelectorsAcrossFiles(theSelectors);
