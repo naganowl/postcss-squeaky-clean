@@ -45,7 +45,7 @@ The academically inclined would point towards an [AST](https://en.wikipedia.org/
 
 To balance delivering results and provide reasonable script runtime, regular expressions are leveraged and have served quite well for the features that have run and the heavy conventions that exist within the files. If performance ever becomes an issue, ASTs can be revisited.
 
-#### Usage
+#### API
 
 There are four plugins for each of the phases which depend on the previous phase (except the `clean` plugin), however each phase leaves the code in a functioning state.
 
@@ -65,6 +65,12 @@ A comma, delineated string representing file extensions that will be examined fo
 
 An object with two keys (`BLACKLIST_CLASSES` and `BLACKLIST_PREFIXES`) whose values are both an array of strings which are class selectors (including the period!).
 These selectors will be ignored (skipped from namespacing) in stylesheets. The selectors in `BLACKLIST_PREFIXES` will ignore class selectors that begin with those strings.
+
+#### Usage
+
+An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
+
+`node scripts/node/scss-parser.js path/to/stylesheet.scss --clean`
 
 #### Linting
 
