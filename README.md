@@ -76,3 +76,20 @@ where `directoriesPath` points to a module which returns an array of strings den
 and `pathRoot` is a file path that's the top level directory of the code to be analyzed
 with `composeDir` being a comma delineated string of the directories that have stylesheets implementing CSS composition
 then `ext` can be used with a comma delineated string to specify the extensions for view files to scan for squeaky selectors
+
+#### Statistics
+
+There are two auxiliary plugins that help collect data to assist with the movement between the squeaky phases
+
+##### `analytics` plugin
+
+After a stylesheet has been namespaced (run through phase 1, the `clean` plugin), it can be checked for how "clean" the stylesheet is relative to the codebase.
+This is determined by checking the base/original (without the suffix) selector and seeing if all occurrences of that selector have been converted
+to CSS modules. This is done by checking if the selector processed in the current stylesheet is the only place that still has a namespace. A stylesheet that contains
+only namespaced selectors that are present in the current stylesheet means that it's selectors have been completely isolated to a file.
+
+The plugin takes the following options:
+
+###### `scssSheets`
+
+A newline separated string of SCSS files. This typically is the result of a Shell command (such as `find`) to aggregate necessary files
