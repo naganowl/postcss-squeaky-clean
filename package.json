@@ -28,6 +28,7 @@
     "postcss": "^5.2.13"
   },
   "devDependencies": {
+    "ava": "^1.2.1",
     "eslint": "^5.13.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
