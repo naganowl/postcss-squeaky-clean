@@ -28,9 +28,24 @@ function additionalSqkdSelector(fileStr) {
   return /\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/.test(fileStr);
 }
 
+function checkContents() {
+  it('adds a namespace to class selector', function () {
+    const styles = '.a-class-selector { color: fuchsia }';
+    return run(styles, (result) => {
+      const sqkdSelector = extractSelector(result.css);
+      const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
+      expect(sqkdSelector).toMatch(sqkdRE);
+      const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+      expect(fileContent).toMatch(sqkdRE);
+      expect(additionalSqkdSelector(fileContent)).toBeTruthy();
+    });
+  });
+}
+
 describe('Squeaky clean plugin', () => {
   beforeAll(function () {
     this.viewFiles = this.viewFiles || ['dummy.js'];
+    this.fileContent = this.fileContent || '$el.addClass("a-class-selector")';
   });
 
   beforeEach(function () {
@@ -39,7 +54,7 @@ describe('Squeaky clean plugin', () => {
 
     // eslint-disable-next-line global-require
     require('child_process').spawnSync = (shellCmd) => {
-      const stdout = shellCmd === 'grep' ? this.viewFiles : '$el.addClass("a-class-selector")';
+      const stdout = shellCmd === 'grep' ? this.viewFiles : this.fileContent;
       return {
         stderr: '',
         stdout,
@@ -51,17 +66,7 @@ describe('Squeaky clean plugin', () => {
     mock.restore();
   });
 
-  it('adds namespace to class selector', function () {
-    const styles = '.a-class-selector { color: fuchsia }';
-    return run(styles, (result) => {
-      const sqkdSelector = extractSelector(result.css);
-      const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
-      expect(sqkdSelector).toMatch(sqkdRE);
-      const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
-      expect(fileContent).toMatch(sqkdRE);
-      expect(additionalSqkdSelector(fileContent)).toBeTruthy();
-    });
-  });
+  checkContents();
 
   it('skips blacklisted classes', () => {
     const styles = '.foo { color: fuchsia }';
