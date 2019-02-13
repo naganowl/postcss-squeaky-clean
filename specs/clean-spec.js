@@ -95,4 +95,12 @@ describe('Squeaky clean plugin', () => {
       });
     });
   });
+
+  describe('with a template view file', () => {
+    beforeAll(function () {
+      this.fileContent = '<div class="a-class-selector">';
+    });
+
+    checkContents();
+  });
 });
