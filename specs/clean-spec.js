@@ -82,6 +82,25 @@ describe('Squeaky clean plugin', () => {
     });
   });
 
+  it('checks the proper directories', () => {
+    let theDirectory;
+    // eslint-disable-next-line global-require
+    require('child_process').spawnSync = (shellCmd, cmdArgs) => {
+      if (shellCmd === 'grep') {
+        theDirectory = cmdArgs;
+      }
+
+      return {
+        stderr: '',
+        stdout: '',
+      };
+    };
+
+    return run(styles, () => {
+      expect(theDirectory[2]).toEqual('stylesheets');
+    }, Object.assign({}, pluginOpts, { directories: ['stylesheets'] }));
+  });
+
   describe('with a non-specified view file extension', () => {
     beforeAll(function () {
       this.viewFiles = ['dummy.ts'];
