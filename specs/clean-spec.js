@@ -76,4 +76,18 @@ describe('Squeaky clean plugin', () => {
       expect(result.css).toEqual(styles);
     });
   });
+
+  describe('with a non-specified view file extension', () => {
+    beforeAll(function () {
+      this.viewFiles = ['dummy.ts'];
+    });
+
+    it('leaves the file alone', function () {
+      const styles = '.a-class-selector { color: fuchsia }';
+      run(styles, () => {
+        // File is written/modified only if it's been processed by the plugin.
+        expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+      });
+    });
+  });
 });
