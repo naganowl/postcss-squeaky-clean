@@ -11,6 +11,7 @@ const pluginOpts = {
   directories: [],
   fileExts: 'js,coffee,eco,rb,erb,ejs',
 };
+const styles = '.a-class-selector { color: fuchsia }';
 
 // Function helper to make our tests cleaner
 // This runs our plugin and needs to be explicitly returned since it's a promise
@@ -30,7 +31,6 @@ function additionalSqkdSelector(fileStr) {
 
 function checkContents() {
   it('adds a namespace to class selector', function () {
-    const styles = '.a-class-selector { color: fuchsia }';
     return run(styles, (result) => {
       const sqkdSelector = extractSelector(result.css);
       const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
@@ -69,16 +69,16 @@ describe('Squeaky clean plugin', () => {
   checkContents();
 
   it('skips blacklisted classes', () => {
-    const styles = '.foo { color: fuchsia }';
-    return run(styles, (result) => {
-      expect(result.css).toEqual(styles);
+    const safeStyles = '.foo { color: fuchsia }';
+    return run(safeStyles, (result) => {
+      expect(result.css).toEqual(safeStyles);
     });
   });
 
   it('skips blacklisted prefixes', () => {
-    const styles = '.ui-button { color: fuchsia }';
-    return run(styles, (result) => {
-      expect(result.css).toEqual(styles);
+    const safeStyles = '.ui-button { color: fuchsia }';
+    return run(safeStyles, (result) => {
+      expect(result.css).toEqual(safeStyles);
     });
   });
 
@@ -88,7 +88,6 @@ describe('Squeaky clean plugin', () => {
     });
 
     it('leaves the file alone', function () {
-      const styles = '.a-class-selector { color: fuchsia }';
       return run(styles, () => {
         // File is written/modified only if it's been processed by the plugin.
         expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
