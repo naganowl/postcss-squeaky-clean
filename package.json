@@ -17,7 +17,8 @@
     "squeaky-lint": "./scripts/verify-sqkd-class-names.js"
   },
   "scripts": {
-    "lint": "eslint '**/*.js'"
+    "lint": "eslint '**/*.js'",
+    "test": "ava specs"
   },
   "license": "MIT",
   "dependencies": {
