@@ -13,7 +13,7 @@ const pluginOpts = {
 };
 
 // Function helper to make our tests cleaner
-// This runs our plugin
+// This runs our plugin and needs to be explicitly returned since it's a promise
 function run(input, callback, opts = pluginOpts) {
   return postcss([plugin(opts)]).process(input)
     .then(callback);
@@ -84,7 +84,7 @@ describe('Squeaky clean plugin', () => {
 
     it('leaves the file alone', function () {
       const styles = '.a-class-selector { color: fuchsia }';
-      run(styles, () => {
+      return run(styles, () => {
         // File is written/modified only if it's been processed by the plugin.
         expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
       });
