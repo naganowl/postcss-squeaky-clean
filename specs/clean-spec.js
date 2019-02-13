@@ -24,6 +24,11 @@ function extractSelector(cssBlock) {
   return cssBlock.match(/\.[\w-]+/)[0];
 }
 
+function additionalSqkdSelector(fileStr) {
+  // See https://stackoverflow.com/a/2823037 for more info
+  return /\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/.test(fileStr);
+}
+
 test.beforeEach(() => {
   mock();
   mockSpawn();
@@ -48,8 +53,9 @@ test('adds namespace to class selector', (t) => {
     const sqkdSelector = extractSelector(result.css);
     const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
     t.regex(sqkdSelector, sqkdRE);
-    const file = fs.readFileSync('dummy.js');
-    t.regex(file.toString(), sqkdRE);
+    const fileContent = fs.readFileSync('dummy.js').toString();
+    t.regex(fileContent, sqkdRE);
+    t.truthy(additionalSqkdSelector(fileContent));
   });
 });
 
