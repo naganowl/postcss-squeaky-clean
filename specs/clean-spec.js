@@ -28,32 +28,36 @@ function additionalSqkdSelector(fileStr) {
   return /\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/.test(fileStr);
 }
 
-beforeEach(() => {
-  mock();
-  mockSpawn();
-
-  // eslint-disable-next-line global-require
-  require('child_process').spawnSync = function ssMock(shellCmd) {
-    const stdout = shellCmd === 'grep' ? ['dummy.js'] : '$el.addClass("a-class-selector")';
-    return {
-      stderr: '',
-      stdout,
-    };
-  };
-});
-
-afterEach(() => {
-  mock.restore();
-});
-
 describe('Squeaky clean plugin', () => {
-  it('adds namespace to class selector', () => {
+  beforeAll(function () {
+    this.viewFiles = this.viewFiles || ['dummy.js'];
+  });
+
+  beforeEach(function () {
+    mock();
+    mockSpawn();
+
+    // eslint-disable-next-line global-require
+    require('child_process').spawnSync = (shellCmd) => {
+      const stdout = shellCmd === 'grep' ? this.viewFiles : '$el.addClass("a-class-selector")';
+      return {
+        stderr: '',
+        stdout,
+      };
+    };
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it('adds namespace to class selector', function () {
     const styles = '.a-class-selector { color: fuchsia }';
     return run(styles, (result) => {
       const sqkdSelector = extractSelector(result.css);
       const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
       expect(sqkdSelector).toMatch(sqkdRE);
-      const fileContent = fs.readFileSync('dummy.js').toString();
+      const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
       expect(fileContent).toMatch(sqkdRE);
       expect(additionalSqkdSelector(fileContent)).toBeTruthy();
     });
