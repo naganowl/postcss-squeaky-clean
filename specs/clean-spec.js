@@ -1,4 +1,3 @@
-const test = require('ava');
 const mock = require('mock-fs');
 const mockSpawn = require('mock-spawn');
 const fs = require('fs');
@@ -29,7 +28,7 @@ function additionalSqkdSelector(fileStr) {
   return /\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/.test(fileStr);
 }
 
-test.beforeEach(() => {
+beforeEach(() => {
   mock();
   mockSpawn();
 
@@ -43,32 +42,34 @@ test.beforeEach(() => {
   };
 });
 
-test.afterEach.always(() => {
+afterEach(() => {
   mock.restore();
 });
 
-test('adds namespace to class selector', (t) => {
-  const styles = '.a-class-selector { color: fuchsia }';
-  return run(styles, (result) => {
-    const sqkdSelector = extractSelector(result.css);
-    const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
-    t.regex(sqkdSelector, sqkdRE);
-    const fileContent = fs.readFileSync('dummy.js').toString();
-    t.regex(fileContent, sqkdRE);
-    t.truthy(additionalSqkdSelector(fileContent));
+describe('Squeaky clean plugin', () => {
+  it('adds namespace to class selector', () => {
+    const styles = '.a-class-selector { color: fuchsia }';
+    return run(styles, (result) => {
+      const sqkdSelector = extractSelector(result.css);
+      const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
+      expect(sqkdSelector).toMatch(sqkdRE);
+      const fileContent = fs.readFileSync('dummy.js').toString();
+      expect(fileContent).toMatch(sqkdRE);
+      expect(additionalSqkdSelector(fileContent)).toBeTruthy();
+    });
   });
-});
 
-test('skips blacklisted classes', (t) => {
-  const styles = '.foo { color: fuchsia }';
-  return run(styles, (result) => {
-    t.is(result.css, styles);
+  it('skips blacklisted classes', () => {
+    const styles = '.foo { color: fuchsia }';
+    return run(styles, (result) => {
+      expect(result.css).toEqual(styles);
+    });
   });
-});
 
-test('skips blacklisted prefixes', (t) => {
-  const styles = '.ui-button { color: fuchsia }';
-  return run(styles, (result) => {
-    t.is(result.css, styles);
+  it('skips blacklisted prefixes', () => {
+    const styles = '.ui-button { color: fuchsia }';
+    return run(styles, (result) => {
+      expect(result.css).toEqual(styles);
+    });
   });
 });
