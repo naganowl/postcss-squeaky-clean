@@ -1,5 +1,5 @@
 # squeaky-clean
-Convert global [SCSS](http://sass-lang.com/) files into [CSS module](https://github.com/css-modules/css-modules) compatible files
+A series of [PostCSS](https://github.com/postcss/postcss) plugins to transition global [SCSS](http://sass-lang.com/) stylesheets into [CSS modules](https://github.com/css-modules/css-modules)
 
 ## Overview
 The main goal is to allow new features to be written like services, old features to be broken apart into smaller pieces which
