@@ -135,6 +135,14 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
+  describe('with object hash syntax', () => {
+    beforeAll(function () {
+      this.fileContent = '{ :title => "Hello", :title_class => "a-class-selector" }';
+    });
+
+    checkContents();
+  });
+
   describe('with a template view file', () => {
     beforeAll(function () {
       this.fileContent = '<div class="a-class-selector">';
@@ -146,6 +154,14 @@ describe('Squeaky clean plugin', () => {
   describe('with an interpolated template view file', () => {
     beforeAll(function () {
       this.fileContent = '<div class="a-class-selector another-class-selector <%= @aVariable %>">';
+    });
+
+    checkContents();
+  });
+
+  describe('with a conditional template view file', () => {
+    beforeAll(function () {
+      this.fileContent = '<div class="first-selector <%= \'a-class-selector\' if @condition %>">';
     });
 
     checkContents();
