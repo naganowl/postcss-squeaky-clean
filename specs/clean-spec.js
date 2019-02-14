@@ -87,6 +87,13 @@ describe('Squeaky clean plugin', () => {
     });
   });
 
+  it('skips tag selectors', () => {
+    const safeStyles = 'button { color: fuchsia }';
+    return run(safeStyles, (result) => {
+      expect(result.css).toEqual(safeStyles);
+    });
+  });
+
   it('checks the proper directories', () => {
     let theDirectory;
     // eslint-disable-next-line global-require
