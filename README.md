@@ -99,3 +99,9 @@ The plugin takes the following options:
 #### `scssSheets`
 
 A newline separated string of SCSS files. This typically is the result of a Shell command (such as `find`) to aggregate necessary files
+
+## Development
+
+`yarn test` will run the specs, `yarn lint` will run `eslint` with the `airbnb` configuration
+
+Specs can be debugged with `node --inspect-brk node_modules/jasmine/bin/jasmine.js specs/**/*.js`
