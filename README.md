@@ -1,5 +1,5 @@
 # squeaky-clean
-Convert global SASS files into CSS module compatible files
+Convert global [SCSS](http://sass-lang.com/) files into [CSS module](https://github.com/css-modules/css-modules) compatible files
 
 ## Overview
 The main goal is to allow new features to be written like services, old features to be broken apart into smaller pieces which
