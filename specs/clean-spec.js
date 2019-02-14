@@ -73,24 +73,27 @@ describe('Squeaky clean plugin', () => {
 
   checkContents();
 
-  it('skips blacklisted classes', () => {
+  it('skips blacklisted classes', function () {
     const safeStyles = '.foo { color: fuchsia }';
     return run(safeStyles, (result) => {
       expect(result.css).toEqual(safeStyles);
+      expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
     });
   });
 
-  it('skips blacklisted prefixes', () => {
+  it('skips blacklisted prefixes', function () {
     const safeStyles = '.ui-button { color: fuchsia }';
     return run(safeStyles, (result) => {
       expect(result.css).toEqual(safeStyles);
+      expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
     });
   });
 
-  it('skips tag selectors', () => {
+  it('skips tag selectors', function () {
     const safeStyles = 'button { color: fuchsia }';
     return run(safeStyles, (result) => {
       expect(result.css).toEqual(safeStyles);
+      expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
     });
   });
 
