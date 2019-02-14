@@ -24,20 +24,25 @@ function extractSelector(cssBlock) {
   return cssBlock.match(/\.[\w-]+/)[0];
 }
 
-function additionalSqkdSelector(fileStr) {
-  // See https://stackoverflow.com/a/2823037 for more info
-  return /\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/.test(fileStr);
+// Check the specific `selStr` selector has been namespaced in `fileStr`
+function additionalSqkdSelector(fileStr, selStr) {
+  return new RegExp(`${selStr}\\s+${selStr}-sqkd-\\w+`).test(fileStr);
 }
 
 function checkContents() {
   it('adds a namespace to class selector', function () {
     return run(styles, (result) => {
+      const baseSelector = extractSelector(styles).slice(1);
       const sqkdSelector = extractSelector(result.css);
       const sqkdRE = new RegExp(`${extractSelector(styles)}-sqkd-\\w+`);
-      expect(sqkdSelector).toMatch(sqkdRE);
       const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
-      expect(fileContent).toMatch(sqkdRE);
-      expect(additionalSqkdSelector(fileContent)).toBeTruthy();
+
+      expect(sqkdSelector).toMatch(sqkdRE); // the selector has been namespaced in stylesheet
+      expect(fileContent).toMatch(sqkdRE); // the selector has been namespaced in view file
+      // Check that there is at least one selector string that has been namespaced
+      expect(fileContent).toMatch(/\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/);
+      // view file contains both base selector and namespaced one
+      expect(additionalSqkdSelector(fileContent, baseSelector)).toBeTruthy();
     });
   });
 }
