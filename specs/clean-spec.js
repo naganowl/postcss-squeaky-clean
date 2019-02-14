@@ -29,7 +29,7 @@ function additionalSqkdSelector(fileStr, selStr) {
   return new RegExp(`${selStr}\\s+${selStr}-sqkd-\\w+`).test(fileStr);
 }
 
-function checkContents() {
+function checkContents(cssOpts) {
   it('adds a namespace to class selector', function () {
     return run(styles, (result) => {
       const baseSelector = extractSelector(styles).slice(1);
@@ -43,7 +43,7 @@ function checkContents() {
       expect(fileContent).toMatch(/\b(\w+-[\w-]+)\s+\1-sqkd-\w+\b/);
       // view file contains both base selector and namespaced one
       expect(additionalSqkdSelector(fileContent, baseSelector)).toBeTruthy();
-    });
+    }, cssOpts);
   });
 }
 
@@ -181,5 +181,24 @@ describe('Squeaky clean plugin', () => {
     });
 
     checkContents();
+  });
+
+  describe('with a composed stylesheet', () => {
+    const composeOpts = Object.assign({}, pluginOpts, { fileExts: 'scss' });
+
+    beforeAll(function () {
+      this.viewFiles = ['helpers.scss'];
+      this.fileContent = "composes: a-class-selector from 'app/assets/stylesheets/utils.scss';";
+    });
+
+    checkContents(composeOpts);
+
+    it('adds to the composed styles', function () {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        debugger
+        expect(fileContent).toMatch(/composes:\sa-class-selector\sa-class-selector-sqkd-\w+/);
+      }, composeOpts);
+    });
   });
 });
