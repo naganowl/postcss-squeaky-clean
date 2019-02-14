@@ -45,34 +45,34 @@ The academically inclined would point towards an [AST](https://en.wikipedia.org/
 
 To balance delivering results and provide reasonable script runtime, regular expressions are leveraged and have served quite well for the features that have run and the heavy conventions that exist within the files. If performance ever becomes an issue, ASTs can be revisited.
 
-#### API
+## API
 
 There are four plugins for each of the phases which depend on the previous phase (except the `clean` plugin), however each phase leaves the code in a functioning state.
 
-##### `clean` plugin
+### `clean` plugin
 
 This adds the namespaces (suffixes) to all selectors and takes the following options:
 
-###### `directories`
+#### `directories`
 
 An array of strings representing file paths which contain the top level directories which the plugin will recursive analyze for class selectors
 
-###### `fileExts`
+#### `fileExts`
 
 A comma, delineated string representing file extensions that will be examined for class selectors within `directories`
 
-###### `blacklistedClasses`
+#### `blacklistedClasses`
 
 An object with two keys (`BLACKLIST_CLASSES` and `BLACKLIST_PREFIXES`) whose values are both an array of strings which are class selectors (including the period!).
 These selectors will be ignored (skipped from namespacing) in stylesheets. The selectors in `BLACKLIST_PREFIXES` will ignore class selectors that begin with those strings.
 
-#### Usage
+## Usage
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
 
 `node scripts/node/scss-parser.js path/to/stylesheet.scss --clean`
 
-#### Linting
+## Linting
 
 To check for any dangling namespaced selectors, the following command can be run
 
@@ -83,11 +83,11 @@ and `pathRoot` is a file path that's the top level directory of the code to be a
 with `composeDir` being a comma delineated string of the directories that have stylesheets implementing CSS composition
 then `ext` can be used with a comma delineated string to specify the extensions for view files to scan for squeaky selectors
 
-#### Statistics
+## Statistics
 
 There are two auxiliary plugins that help collect data to assist with the movement between the squeaky phases
 
-##### `analytics` plugin
+### `analytics` plugin
 
 After a stylesheet has been namespaced (run through phase 1, the `clean` plugin), it can be checked for how "clean" the stylesheet is relative to the codebase.
 This is determined by checking the base/original (without the suffix) selector and seeing if all occurrences of that selector have been converted
@@ -96,6 +96,6 @@ only namespaced selectors that are present in the current stylesheet means that 
 
 The plugin takes the following options:
 
-###### `scssSheets`
+#### `scssSheets`
 
 A newline separated string of SCSS files. This typically is the result of a Shell command (such as `find`) to aggregate necessary files
