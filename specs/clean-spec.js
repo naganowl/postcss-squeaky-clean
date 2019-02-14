@@ -119,9 +119,49 @@ describe('Squeaky clean plugin', () => {
     });
   });
 
+  describe('with a class name variable', () => {
+    beforeAll(function () {
+      this.fileContent = 'rowClassName = "a-class-selector"';
+    });
+
+    checkContents();
+  });
+
+  describe('with an underscore class name variable', () => {
+    beforeAll(function () {
+      this.fileContent = 'row_class = "a-class-selector"';
+    });
+
+    checkContents();
+  });
+
   describe('with a template view file', () => {
     beforeAll(function () {
       this.fileContent = '<div class="a-class-selector">';
+    });
+
+    checkContents();
+  });
+
+  describe('with an interpolated template view file', () => {
+    beforeAll(function () {
+      this.fileContent = '<div class="a-class-selector another-class-selector <%= @aVariable %>">';
+    });
+
+    checkContents();
+  });
+
+  describe('with a invocation passing in an object eligible key', () => {
+    beforeAll(function () {
+      this.fileContent = "<%- require('template-file')({firstClasses: 'a-class-selector'}) %>";
+    });
+
+    checkContents();
+  });
+
+  describe('with an interpolated template function call', () => {
+    beforeAll(function () {
+      this.fileContent = "<%= a_helper(:helper_text => 'Help!', :helper_class => 'a-class-selector') %>";
     });
 
     checkContents();
