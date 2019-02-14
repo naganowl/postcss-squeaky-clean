@@ -206,7 +206,6 @@ describe('Squeaky clean plugin', () => {
     it('adds to the composed styles', function () {
       return run(styles, () => {
         const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
-        debugger
         expect(fileContent).toMatch(/composes:\sa-class-selector\sa-class-selector-sqkd-\w+/);
       }, composeOpts);
     });
