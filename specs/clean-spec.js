@@ -339,6 +339,15 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
+  describe('with conditional in template markup', () => {
+    beforeAll(function () {
+      this.viewFiles = ['list.erb'];
+      this.fileContent = '<li class="item <%= deleted? ? "deleted a-class-selector" : " %>">';
+    });
+
+    checkContents();
+  });
+
   describe('with a composed stylesheet', () => {
     const composeOpts = Object.assign({}, pluginOpts, { fileExts: 'scss' });
 
