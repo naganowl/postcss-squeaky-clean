@@ -97,6 +97,21 @@ describe('Squeaky clean plugin', () => {
     });
   });
 
+  it('namespaces pseudo elements', () => {
+    const cssStyles = 'a:not(.a-class-selector) { color: fuchsia }';
+    return run(cssStyles, (result) => {
+      expect(result.css).toContain('(.a-class-selector-sqkd-');
+    });
+  });
+
+  it('namespaces multiple eligible class selectors', () => {
+    const cssStyles = 'a.link-selector:not(.a-class-selector) { color: fuchsia }';
+    return run(cssStyles, (result) => {
+      expect(result.css).toContain('link-selector-sqkd-');
+      expect(result.css).toContain('(.a-class-selector-sqkd-');
+    });
+  });
+
   it('checks the proper directories', () => {
     let theDirectory;
     // eslint-disable-next-line global-require
@@ -145,6 +160,73 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
+  describe('with a ternary operation', () => {
+    beforeAll(function () {
+      this.fileContent = "table_class = @disabled ? 'a-class-selector' : ''";
+    });
+
+    checkContents();
+  });
+
+  describe('with a CoffeeScript conditional', () => {
+    beforeAll(function () {
+      this.fileContent = 'className = if @options.legacy then "a-class-selector" else "old"';
+    });
+
+    checkContents();
+  });
+
+  describe('with a function returning a string', () => {
+    beforeAll(function () {
+      this.fileContent = 'colClassName: -> "a-class-selector #{super}"';
+    });
+
+    checkContents();
+  });
+
+  describe('with CoffeeScript-style function interpolation', () => {
+    beforeAll(function () {
+      this.fileContent = `
+        className: ->
+          viewClassName = "#{super} a-class-selector"
+      `;
+    });
+
+    checkContents();
+  });
+
+  describe('with a value string that has interpolation', () => {
+    beforeAll(function () {
+      this.fileContent = 'cellClassName: "a-class-selector #{Row.prototype::classProp}"';
+    });
+
+    checkContents();
+  });
+
+  describe('with an eligible array of strings as part of an argument', () => {
+    beforeAll(function () {
+      this.fileContent = 'autocompleter = new Autocompleter(url: "/link", extraClassName: ["a-class-selector"])';
+    });
+
+    checkContents();
+  });
+
+  describe('with a function value that has the selector as a string argument', () => {
+    beforeAll(function () {
+      this.fileContent = '{ label: "Submitted At", cell: Backgrid.Extension.MomentCell.extend(className: "a-class-selector"), editable: false, sortable: false }';
+    });
+
+    checkContents();
+  });
+
+  describe('with a nested function call with an eligible string selector', () => {
+    beforeAll(function () {
+      this.fileContent = '@$(".todos-item").tipsy(Utils.getTipsyOptions(className: "a-class-selector"))';
+    });
+
+    checkContents();
+  });
+
   describe('with object hash syntax', () => {
     beforeAll(function () {
       this.fileContent = '{ :title => "Hello", :title_class => "a-class-selector" }';
@@ -185,9 +267,25 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
-  describe('with an interpolated template function call', () => {
+  describe('with an invocation passing an eligible string as an argument', () => {
+    beforeAll(function () {
+      this.fileContent = '<%- templateHelpers.svgIcon(@iconName, "a-class-selector #{@className}") %>';
+    });
+
+    checkContents();
+  });
+
+  describe('with a template function call', () => {
     beforeAll(function () {
       this.fileContent = "<%= a_helper(:helper_text => 'Help!', :helper_class => 'a-class-selector') %>";
+    });
+
+    checkContents();
+  });
+
+  describe('with a multi argument template function call', () => {
+    beforeAll(function () {
+      this.fileContent = '<%= standard_button "Submit", :id => "submit", :button_class => "a-class-selector" %>';
     });
 
     checkContents();
