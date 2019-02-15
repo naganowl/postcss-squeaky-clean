@@ -163,7 +163,7 @@ describe('Squeaky clean plugin', () => {
 
   describe('with an interpolated template view file', () => {
     beforeAll(function () {
-      this.fileContent = '<div class="a-class-selector another-class-selector <%= @aVariable %>">';
+      this.fileContent = '<div class="a-class-selector another-class-selector <%= @aVariable unless @finished %>">';
     });
 
     checkContents();
@@ -171,13 +171,13 @@ describe('Squeaky clean plugin', () => {
 
   describe('with a conditional template view file', () => {
     beforeAll(function () {
-      this.fileContent = '<div class="first-selector <%= \'a-class-selector\' if @condition %>">';
+      this.fileContent = '<div class="first-selector <%= "a-class-selector" if @condition %>">';
     });
 
     checkContents();
   });
 
-  describe('with a invocation passing in an object eligible key', () => {
+  describe('with an invocation passing in an object eligible key', () => {
     beforeAll(function () {
       this.fileContent = "<%- require('template-file')({firstClasses: 'a-class-selector'}) %>";
     });
