@@ -227,6 +227,54 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
+  describe('with a Ruby hash key value pair', () => {
+    beforeAll(function () {
+      this.fileContent = ':class => "a-class-selector"';
+    });
+
+    checkContents();
+  });
+
+  describe('with a Ruby hash key value pair string interpolated', () => {
+    beforeAll(function () {
+      this.fileContent = '#{f.text_field form_field, :class => "a-class-selector #{opts[:class]}}';
+    });
+
+    checkContents();
+  });
+
+  describe('with a Ruby hash key value pair assignment', () => {
+    beforeAll(function () {
+      this.fileContent = 'opts_hash = {:message => ", :class => "a-class-selector"}';
+    });
+
+    checkContents();
+  });
+
+  describe('with a conditional method call with a hash that is string value eligible', () => {
+    beforeAll(function () {
+      this.fileContent = 'html_options.merge!({:class => "a-class-selector"}) if tab[:selected]';
+    });
+
+    checkContents();
+  });
+
+  describe('with Object hash interpolation with string as eligible value', () => {
+    beforeAll(function () {
+      this.fileContent = 'html << render( :locals => {:row_class => "row #{@expanded ? "a-class-selector" : "}"})';
+    });
+
+    checkContents();
+  });
+
+  describe('with markup containing eligible string as an argument', () => {
+    beforeAll(function () {
+      this.fileContent = 'link_to "<span class="a-class-selector #{opts.enabled}">#{text}</span>".html_safe, url, link_options';
+    });
+
+    checkContents();
+  });
+
   describe('with object hash syntax', () => {
     beforeAll(function () {
       this.fileContent = '{ :title => "Hello", :title_class => "a-class-selector" }';
