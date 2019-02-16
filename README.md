@@ -66,6 +66,11 @@ A comma, delineated string representing file extensions that will be examined fo
 An object with two keys (`BLACKLIST_CLASSES` and `BLACKLIST_PREFIXES`) whose values are both an array of strings which are class selectors (including the period!).
 These selectors will be ignored (skipped from namespacing) in stylesheets. The selectors in `BLACKLIST_PREFIXES` will ignore class selectors that begin with those strings.
 
+#### `regExps`
+
+An array of strings that represent regular expressions to target specific internal/helper method invocations within a codebase that can be targeted by
+the plugin. See 0c645c5 for an example.
+
 ## Usage
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
