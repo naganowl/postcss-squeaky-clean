@@ -315,14 +315,6 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
-  describe('with an invocation passing an eligible string as an argument', () => {
-    beforeAll(function () {
-      this.fileContent = '<%- templateHelpers.svgIcon(@iconName, "a-class-selector #{@className}") %>';
-    });
-
-    checkContents();
-  });
-
   describe('with a template function call', () => {
     beforeAll(function () {
       this.fileContent = "<%= a_helper(:helper_text => 'Help!', :helper_class => 'a-class-selector') %>";
@@ -364,5 +356,15 @@ describe('Squeaky clean plugin', () => {
         expect(fileContent).toMatch(/composes:\sa-class-selector\sa-class-selector-sqkd-\w+/);
       }, composeOpts);
     });
+  });
+
+  describe('with a custom RegExp', () => {
+    const reOpts = Object.assign({}, pluginOpts, { regExps: ['svg_?[iI]con.+?,.+?[\'"]'] });
+
+    beforeAll(function () {
+      this.fileContent = '<%- templateHelpers.svgIcon(@iconName, "a-class-selector #{@className}") %>';
+    });
+
+    checkContents(reOpts);
   });
 });

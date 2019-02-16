@@ -8,6 +8,7 @@ const isIgnoredSelector = require('../helpers/is-ignored-selector');
 
 let directories;
 let fileExts;
+let regExps = [];
 
 function hasCommentException(cssRule) {
   return cssRule.nodes && cssRule.nodes.findIndex(n => n.type === 'comment' && n.text.includes('squeaky-skip')) !== -1;
@@ -128,11 +129,14 @@ function replaceContents(contents, onlyClass, hash, file) {
   } else {
     replacedContents = contents.replace(new RegExp(`([cCk]lass(?:Names?|es)?[:=][^(:]+?)(\\w${classSelectorCharacters}+)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`((?:(?:add|remove|toggle)Class(?:SVG)?)(?:\\s|\\()['"])(${classSelectorCharacters}+)`, 'g'), replacer);
-    replacedContents = replacedContents.replace(new RegExp(`(svg_?[iI]con.+?,.+?['"])(\\w${classSelectorCharacters}+)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`([cCk]lass(?:es)?.+?=>.+?)(\\w${classSelectorCharacters}*)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`(class=['"]${classSelectorCharacters}+?<%=.+?['"])(\\w${classSelectorCharacters}+)(['"]\\s+(?:if|unless))`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp('(\\sclassName:\\s+->[\\n\\r]+)(.+[\\n\\r])+', 'g'), dynamicClassReplacer);
     replacedContents = replacedContents.replace(new RegExp(`([cC]lass(?:Names?)?\\s+?=.+?['"])(\\w${classSelectorCharacters}+?)(['"])`, 'g'), replacer);
+
+    regExps.forEach((re) => {
+      replacedContents = replacedContents.replace(new RegExp(`(${re})(\\w${classSelectorCharacters}+)`, 'g'), replacer);
+    });
   }
 
   if (/\.e?rb$/.test(file)) {
@@ -162,6 +166,7 @@ function cleanSelectorsAcrossFiles(theSelectors) {
 
 module.exports = postcss.plugin('squeakyCleanPlugin', (options = {}) => {
   directories = options.directories; // eslint-disable-line prefer-destructuring
+  regExps = regExps.concat(options.regExps); // eslint-disable-line prefer-destructuring
   fileExts = options.fileExts.replace(/,/g, '|');
   blacklistedClass.init({
     BLACKLIST_CLASSES: options.BLACKLIST_CLASSES,
