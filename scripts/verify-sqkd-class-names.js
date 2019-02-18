@@ -127,6 +127,6 @@ const unusedClassNames = uniq(a.concat(b)).sort();
 console.log('UNUSED SQUEAKY CLASSNAMES', unusedClassNames); // eslint-disable-line no-console
 if (unusedClassNames.length > 0) {
   // eslint-disable-next-line no-console
-  console.log('\x1b[31m%s\x1b[0m', 'Please check the usage of the class name(s) mentioned above by running `node script/node/verify-sqkd-class-names.js` locally!');
+  console.log('\x1b[31m%s\x1b[0m', 'Please check the usage of the class name(s) mentioned above by running `squeaky-lint` locally!');
 }
 process.exit(unusedClassNames.length);
