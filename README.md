@@ -77,6 +77,10 @@ An [example script](./examples/scss-parser.js) demonstrates how the plugins can 
 
 `node scripts/node/scss-parser.js path/to/stylesheet.scss --clean`
 
+The `analytics` plugin can be run with
+
+`node scripts/node/scss-parser.js path/to/stylesheet.scss --analyze`
+
 ## Linting
 
 To check for any dangling namespaced selectors, the following command can be run
