@@ -7,7 +7,6 @@ const plugin = require('../plugins/analytics');
 const pluginOpts = {
   scssPath: 'helpers.scss',
   scssSheets: 'app/assets/stylesheets',
-  statsMap: {},
 };
 const styles = '.a-class-selector-sqkd-deadbeef { color: fuchsia } .btn { color: peru }';
 
@@ -23,7 +22,9 @@ describe('Squeaky analytics plugin', () => {
     mock();
     mockSpawn();
 
-    this.runOpts = Object.assign({}, pluginOpts);
+    this.runOpts = Object.assign({}, pluginOpts, {
+      statsMap: {},
+    });
 
     // eslint-disable-next-line global-require
     require('child_process').spawnSync = (shellCmd, shellArgs) => {
