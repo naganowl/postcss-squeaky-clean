@@ -118,7 +118,11 @@ A newline separated string of SCSS files. This typically is the result of a Shel
 If a given page layout pulls in a number of stylesheets, trying to flatten those selectors may lead to specificity conflicts because the selectors have
 the same level of nesting, however depend on the order of files being loaded to break ties. These issues can be detected by running this plugin which
 will check all namespaced selectors in a given stylesheet and output an object detailing the selectors + properties that have conflicts and the file
-they source from. See the following image for a better sense of the structure:
+they source from.
+
+See the following image for a better sense of the structure:
+
+<img width="1037" alt="conflictsMap" src="https://user-images.githubusercontent.com/4563859/42901934-c73f8992-8a81-11e8-81f8-2fa310c61b38.png">
 
 The following options can be passed in
 
