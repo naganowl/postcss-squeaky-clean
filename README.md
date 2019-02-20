@@ -48,3 +48,9 @@ To balance delivering results and provide reasonable script runtime, regular exp
 ## How can I use this?!
 
 See the [docs](./DOCS.md) or [example script](./examples/scss-parser.js)!
+
+## What's up with the name?
+
+The first iteration of this concept was to try to create a layout/environment for pages that was empty of style dependencies so that features could be
+built anew without any outside styling influence. There was a need to setup some reset/normalization styles which were needed to establish a "clean room".
+This plugin has been a second-wind approach to embodying the spirit of the previous attempt by trying to make layouts, even cleaner. Squeaky clean in fact!
