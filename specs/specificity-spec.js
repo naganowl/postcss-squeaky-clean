@@ -2,6 +2,20 @@ const postcss = require('postcss');
 const plugin = require('../plugins/specificity');
 
 const pluginOpts = {
+  genericDirs: [
+    'common/',
+    'styleguide/layout',
+    'reset',
+    'helper',
+    'styleguide/',
+    'internal/',
+    'backbone/',
+    'stylesheets/',
+    'javascripts/',
+  ],
+  specificDirs: [
+    'styleguide/modules/tables/header-cell',
+  ],
   scssPath: 'helpers.scss',
 };
 const styles = '.icon-sqkd-deadbeef { color: fuchsia } .std-btn-sqkd-beefdead .icon-sqkd-fadebeef { color: peru }';

@@ -12,6 +12,11 @@ let selectorPropMap;
 // which require file precedence intervention since the specificity of their declarations are equal.
 let specMap;
 
+// Array of directory strings which should be given less precedence (lose specificity ties)
+let genericDirs;
+// Array of directory strings which should be given more precedence (wins specificity ties)
+let specificDirs;
+
 // Helper function to evaluate the specificity of a file based off
 // where it is in the option directory array
 function valueAccumulator(aFile, filesOrDirectory, initVal = 0) {
@@ -30,20 +35,10 @@ function valueAccumulator(aFile, filesOrDirectory, initVal = 0) {
 // based on the file precedence defined in said options
 function fileValue(theFile) {
   // Can add exceptions that should take less precedence
-  let primaryVal = valueAccumulator(theFile, [
-    'common/',
-    'styleguide/layout',
-    'reset',
-    'helper',
-    'styleguide/',
-    'internal/',
-    'backbone/',
-    'stylesheets/',
-    'javascripts/',
-  ]);
+  let primaryVal = valueAccumulator(theFile, [...genericDirs]);
 
   // Exceptions that take more precedence
-  primaryVal = valueAccumulator(theFile, ['styleguide/modules/tables/header-cell'], primaryVal);
+  primaryVal = valueAccumulator(theFile, [...specificDirs], primaryVal);
 
   return primaryVal;
 }
@@ -93,6 +88,7 @@ module.exports = postcss.plugin('squeakySpecificityPlugin', (options = {}) => {
   /* of CSS prop name strings to Conflict objects containing the conflicting value, full selector
   /*  and the most specific conflict object. */
   const { conflictsMap, specificityMap, scssPath } = options;
+  ({ genericDirs, specificDirs } = options);
   selectorPropMap = new Map();
   specMap = specificityMap;
   return function main(css) {
