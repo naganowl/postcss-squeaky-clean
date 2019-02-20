@@ -5,7 +5,7 @@ A series of [PostCSS](https://github.com/postcss/postcss) plugins to transition 
 The main goal is to allow new features to be written like services, old features to be broken apart into smaller pieces which
 both allows for faster deliverables since dependencies and the affected surfaces will be clearer.
 
-Additionally, note that the squeaky clean parser uses regex to replace classes such that the following patterns will generally be search/replaced:
+Additionally, note that the squeaky (namespaced) clean parser uses regex to replace classes such that the following patterns will generally be search/replaced:
 
 * `class=whatever` in a scss/css
 * js variable names like: `<FOO>ClassName` in javascript
