@@ -5,10 +5,7 @@ let pathRoot;
 
 module.exports = {
   init(opts) {
-    /* eslint-disable prefer-destructuring */
-    directories = opts.directories;
-    pathRoot = opts.pathRoot;
-    /* eslint-enable prefer-destructuring */
+    ({ directories, pathRoot } = opts);
   },
   calculate(directoriesToUse) {
     let directoryList = directoriesToUse || directories;

@@ -15,10 +15,7 @@ function blacklistedPrefix(classList) {
 */
 module.exports = {
   init(opts) {
-    /* eslint-disable prefer-destructuring */
-    BLACKLIST_CLASSES = opts.BLACKLIST_CLASSES;
-    BLACKLIST_PREFIXES = opts.BLACKLIST_PREFIXES;
-    /* eslint-enable prefer-destructuring */
+    ({ BLACKLIST_CLASSES, BLACKLIST_PREFIXES } = opts);
   },
   find(selectorName) {
     const selectorClasses = collectClasses(selectorName).map(selector => `.${selector}`);

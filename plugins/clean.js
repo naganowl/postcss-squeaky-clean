@@ -8,7 +8,7 @@ const isIgnoredSelector = require('../helpers/is-ignored-selector');
 
 let directories;
 let fileExts;
-let regExps = [];
+let regExps;
 
 function hasCommentException(cssRule) {
   return cssRule.nodes && cssRule.nodes.findIndex(n => n.type === 'comment' && n.text.includes('squeaky-skip')) !== -1;
@@ -165,8 +165,7 @@ function cleanSelectorsAcrossFiles(theSelectors) {
 }
 
 module.exports = postcss.plugin('squeakyCleanPlugin', (options = {}) => {
-  directories = options.directories; // eslint-disable-line prefer-destructuring
-  regExps = regExps.concat(options.regExps); // eslint-disable-line prefer-destructuring
+  ({ directories, regExps = [] } = options);
   fileExts = options.fileExts.replace(/,/g, '|');
   blacklistedClass.init({
     BLACKLIST_CLASSES: options.BLACKLIST_CLASSES,
