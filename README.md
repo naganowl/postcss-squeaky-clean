@@ -81,6 +81,10 @@ The `analytics` plugin can be run with
 
 `node scripts/node/scss-parser.js path/to/stylesheet.scss --analyze`
 
+Selector specificity can be observed with
+
+`node scripts/node/scss-parser.js path/to/stylesheet.scss --specify`
+
 ## Linting
 
 To check for any dangling namespaced selectors, the following command can be run
@@ -108,6 +112,27 @@ The plugin takes the following options:
 #### `scssSheets`
 
 A newline separated string of SCSS files. This typically is the result of a Shell command (such as `find`) to aggregate necessary files
+
+### `specificity` plugin
+
+If a given page layout pulls in a number of stylesheets, trying to flatten those selectors may lead to specificity conflicts because the selectors have
+the same level of nesting, however depend on the order of files being loaded to break ties. These issues can be detected by running this plugin which
+will check all namespaced selectors in a given stylesheet and output an object detailing the selectors + properties that have conflicts and the file
+they source from. See the following image for a better sense of the structure:
+
+The following options can be passed in
+
+#### `scssPath`
+
+A string representing the stylesheet to analyze
+
+#### `genericDir`
+
+An array of directory strings which should be given less precedence (lose specificity ties). Usually utility + reset files
+
+#### `specificDir`
+
+An array of directory strings which should be given more precedence (win specificity ties). Usually exceptional cases
 
 ## Development
 
