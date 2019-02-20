@@ -47,4 +47,4 @@ To balance delivering results and provide reasonable script runtime, regular exp
 
 ## How can I use this?!
 
-See the [docs!](./DOCS.md).
+See the [docs](./DOCS.md) or [example script](./examples/scss-parser.js)!
