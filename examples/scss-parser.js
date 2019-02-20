@@ -8,9 +8,9 @@ const glob = require('glob');
 // PostCSS dependencies/plugins
 const postcss = require('postcss');
 const syntax = require('postcss-scss');
-const squeakyCleanPlugin = require('squeaky-clean/plugins/clean');
-const squeakyAnalyticsPlugin = require('squeaky-clean/plugins/analytics');
-const squeakySpecificityPlugin = require('squeaky-clean/plugins/specificity');
+const squeakyCleanPlugin = require('postcss-squeaky-clean/plugins/clean');
+const squeakyAnalyticsPlugin = require('postcss-squeaky-clean/plugins/analytics');
+const squeakySpecificityPlugin = require('postcss-squeaky-clean/plugins/specificity');
 
 // Custom require files or inlined arrays for analysis
 const directories = require('./helpers/directories');

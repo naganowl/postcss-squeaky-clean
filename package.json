@@ -1,10 +1,10 @@
 {
-  "name": "squeaky-clean",
+  "name": "postcss-squeaky-clean",
   "version": "0.0.1",
   "description": "Convert SASS files into CSS modules compatible files",
   "repository": {
     "type": "git",
-    "url": "https://github.com/naganowl/squeaky-clean.git"
+    "url": "https://github.com/naganowl/postcss-squeaky-clean.git"
   },
   "author": "Alan Wong <naganowl@gmail.com>",
   "contributors": [

@@ -1,4 +1,4 @@
-# squeaky-clean
+# postcss-squeaky-clean
 A series of [PostCSS](https://github.com/postcss/postcss) plugins to transition global [SCSS](http://sass-lang.com/) stylesheets into [CSS modules](https://github.com/css-modules/css-modules)
 
 ## Overview
