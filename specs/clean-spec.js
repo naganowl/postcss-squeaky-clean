@@ -101,6 +101,18 @@ describe('Squeaky clean plugin', () => {
     });
   });
 
+  it('skips exceptions', function () {
+    const safeStyles = `
+      button { // squeaky-skip
+        color: fuchsia
+      }
+    `;
+    return run(safeStyles, (result) => {
+      expect(result.css).toEqual(safeStyles);
+      expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+    });
+  });
+
   it('namespaces pseudo elements', () => {
     const cssStyles = 'a:not(.a-class-selector) { color: fuchsia }';
     return run(cssStyles, (result) => {
