@@ -57,8 +57,10 @@ describe('Squeaky clean plugin', () => {
     mock();
     mockSpawn();
 
-    // eslint-disable-next-line global-require
+    /* eslint-disable global-require */
+    this.spawnSync = require('child_process').spawnSync;
     require('child_process').spawnSync = (shellCmd) => {
+      /* eslint-enable global-require */
       const stdout = shellCmd === 'grep' ? this.viewFiles : this.fileContent;
       return {
         stderr: '',
@@ -68,6 +70,8 @@ describe('Squeaky clean plugin', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line global-require
+    require('child_process').spawnSync = this.spawnSync;
     mock.restore();
   });
 

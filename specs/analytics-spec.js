@@ -26,8 +26,10 @@ describe('Squeaky analytics plugin', () => {
       statsMap: {},
     });
 
-    // eslint-disable-next-line global-require
+    /* eslint-disable global-require */
+    this.spawnSync = require('child_process').spawnSync;
     require('child_process').spawnSync = (shellCmd, shellArgs) => {
+      /* eslint-enable global-require */
       if (shellCmd === 'sh') {
         this.shellArgs = shellArgs;
       }
@@ -40,6 +42,8 @@ describe('Squeaky analytics plugin', () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line global-require
+    require('child_process').spawnSync = this.spawnSync;
     mock.restore();
   });
 
