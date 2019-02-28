@@ -45,6 +45,13 @@ The academically inclined would point towards an [AST](https://en.wikipedia.org/
 
 To balance delivering results and provide reasonable script runtime, regular expressions are leveraged and have served quite well for the features that have run and the heavy conventions that exist within the files. If performance ever becomes an issue, ASTs can be revisited.
 
+## Why bash in node?
+
+You may have noticed that sprinkled within the node plugins, there are helpers that spawn bash shell commands to run logic that could've been done within
+node. The choice for this is to take advantage of the declarative, straight-forwardness of built in bash commands to handle a bulk of the heavy lifting in
+the plugins. The majority of the logic that bash is used for is to do find/replace within files which given the magnitude of files that can be touched allows
+for better performance than the context switch from spawning an external node process.
+
 ## How can I use this?!
 
 See the [docs](./DOCS.md) or [example script](./examples/scss-parser.js)!
