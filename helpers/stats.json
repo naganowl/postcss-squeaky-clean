@@ -1,0 +1,113 @@
+{
+  "errors": [],
+  "warnings": [],
+  "version": "3.11.0",
+  "hash": "c3c6029fd4638cf44a8a9f77757c3870ebb83b94",
+  "children": [
+    {},
+    {
+      "errors": [],
+      "warnings": [],
+      "hash": "9f77757c3870ebb83b94",
+      "publicPath": "/compiled/",
+      "assetsByChunkName": {},
+      "assets": [],
+      "entrypoints": {},
+      "chunks": [
+        {
+          "id": 0,
+          "rendered": true,
+          "initial": true,
+          "entry": false,
+          "extraAsync": false,
+          "size": 1832544,
+          "names": [
+            "common-chunks"
+          ],
+          "files": [
+            "main-77e42ecd9c8d666ce632.js",
+            "main-80643f83d77653e38442101b24449c85.css"
+          ],
+          "hash": "77e42ecd9c8d666ce632",
+          "parents": [
+            102
+          ],
+          "modules": [
+            {
+              "id": 57,
+              "name": "./frontend/features/apply-template/selectors/index.js",
+              "index": 2907,
+              "index2": 2914,
+              "size": 2855,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+                0,
+                3,
+                7,
+                8
+              ],
+              "assets": [],
+              "issuerId": 58,
+              "issuerName": "./frontend/features/apply-template/action-creators/action-creators.js",
+              "profile": {
+                "factory": 331,
+                "building": 219
+              },
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "usedExports": true,
+              "providedExports": null,
+              "optimizationBailout": [],
+              "depth": 7
+            }
+          ],
+          "filteredModules": 0,
+          "origins": [
+            {
+              "moduleId": 4470,
+              "moduleName": "./app/assets/javascripts/main.js",
+              "loc": "",
+              "name": "main",
+              "reasons": []
+            }
+          ]
+        }
+      ],
+      "modules": [
+        {
+          "id": 0,
+          "name": "./node_modules/prop-types/index.js",
+          "index": 122,
+          "index2": 117,
+          "size": 956,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            102,
+            104
+          ],
+          "assets": [],
+          "issuerId": 607,
+          "issuerName": "./node_modules/react-redux/es/utils/PropTypes.js",
+          "profile": {
+            "factory": 18,
+            "building": 1
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "usedExports": true,
+          "providedExports": null,
+          "optimizationBailout": [],
+          "depth": 3
+        }
+      ]
+    }
+  ]
+}
