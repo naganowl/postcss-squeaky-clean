@@ -216,4 +216,18 @@ describe('Squeaky heuristic plugin', () => {
       expect(remSqkdSels.indexOf('foo-sqkd-deadbeef')).toBeGreaterThan(remSqkdSels.indexOf('quux-sqkd-deafbeef'));
     });
   });
+
+  describe('without a webpack JSON file', () => {
+    beforeEach(() => {
+      const runOpts = Object.assign({}, pluginOpts, { statsPath: '' });
+      postcss([plugin(runOpts)]).process('input');
+    });
+
+    it('throws an error', () => {
+      /* eslint-disable no-console */
+      expect(console.log).toHaveBeenCalled();
+      expect(console.log.calls.mostRecent().args.filter(logged => logged.includes('webpack --json'))).toBeTruthy();
+      /* eslint-enable no-console */
+    });
+  });
 });
