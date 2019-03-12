@@ -218,7 +218,7 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
-  describe('with a common chunked file', () => {
+  describe('with a common chunked view file containing the namespaced selector', () => {
     beforeAll(function() {
       this.fileName = './app/assets/javascripts/backbone/child.js';
     });
