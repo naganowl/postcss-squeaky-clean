@@ -1,6 +1,7 @@
 const mock = require('mock-fs');
 
 const postcss = require('postcss');
+const uniq = require('lodash.uniq');
 const plugin = require('../plugins/heuristic');
 
 const pluginOpts = {
@@ -235,6 +236,31 @@ describe('Squeaky heuristic plugin', () => {
           }).length;
         });
         expect(depLog.length).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  describe('with a common chunked excluded file containing the namespaced selector', () => {
+    beforeAll(function() {
+      this.fileName = './app/assets/javascripts/backbone/child.scss';
+    });
+
+    afterAll(function() {
+      delete this.fileName;
+    });
+
+    it('ignores any other file', () => {
+      return run(basicNestedStyles, () => {
+        const depLog = console.log.calls.allArgs().filter((logged) => {
+          return logged.filter((entries) => {
+            return typeof entries === 'string' && entries.includes('Finding dependencies of:');
+          }).length;
+        });
+        const analyzedFiles = depLog.map((deps) => {
+          const [depFile] = deps;
+          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
+        });
+        expect(uniq(analyzedFiles).length).toEqual(1);
       });
     });
   });
