@@ -80,7 +80,7 @@
       "modules": [
         {
           "id": 0,
-          "name": "./node_modules/prop-types/index.js",
+          "name": "./app/assets/javascripts/backbone/parent.js",
           "index": 122,
           "index2": 117,
           "size": 956,
@@ -94,7 +94,7 @@
           ],
           "assets": [],
           "issuerId": 607,
-          "issuerName": "./node_modules/react-redux/es/utils/PropTypes.js",
+          "issuerName": "./app/assets/javascripts/backbone/child.js",
           "profile": {
             "factory": 18,
             "building": 1

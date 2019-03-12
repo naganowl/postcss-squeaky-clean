@@ -218,6 +218,27 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
+  describe('with a common chunked file', () => {
+    beforeAll(function() {
+      this.fileName = './app/assets/javascripts/backbone/child.js';
+    });
+
+    afterAll(function() {
+      delete this.fileName;
+    });
+
+    it('traverses parent file of filter arguments', () => {
+      return run(basicNestedStyles, () => {
+        const depLog = console.log.calls.allArgs().filter((logged) => {
+          return logged.filter((entries) => {
+            return typeof entries === 'string' && entries.includes('Finding dependencies of:') && entries.includes('parent.js');
+          }).length;
+        });
+        expect(depLog.length).toBeGreaterThan(0);
+      });
+    });
+  });
+
   describe('without a webpack JSON file', () => {
     beforeEach(() => {
       const runOpts = Object.assign({}, pluginOpts, { statsPath: '' });
