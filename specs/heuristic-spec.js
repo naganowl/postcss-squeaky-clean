@@ -60,7 +60,7 @@ function analyzeSelectors(theStyles, callback) {
 describe('Squeaky heuristic plugin', () => {
   beforeAll(function () {
     this.viewFiles = this.viewFiles || ['dummy.js'];
-    this.fileContent = this.fileContent || '$el.addClass("foo-sqkd-deadbeef")';
+    this.fileName = this.fileName || 'app/assets/features/backbone/lightbox.coffee';
   });
 
   beforeEach(function () {
@@ -73,7 +73,7 @@ describe('Squeaky heuristic plugin', () => {
     this.spawnSync = require('child_process').spawnSync;
     require('child_process').spawnSync = (shellCmd) => {
       /* eslint-enable global-require */
-      const stdout = shellCmd === 'grep' ? this.viewFiles : this.fileContent;
+      const stdout = shellCmd === 'grep' ? this.viewFiles : this.fileName;
       return {
         stderr: '',
         stdout,
