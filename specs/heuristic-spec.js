@@ -12,6 +12,20 @@ const pluginOpts = {
   statsPath: './stats.json',
 };
 
+const basicNestedStyles = `
+  .foo-sqkd-deadbeef {
+    color: fuchsia;
+
+    a {
+      border: 0;
+
+      .bar-sqkd-fadedbabe {
+        padding: 1px;
+      }
+    }
+  }
+`;
+
 // Function helper to make our tests cleaner
 // This runs our plugin and needs to be explicitly returned since it's a promise
 function run(input, callback, opts = pluginOpts) {
@@ -76,20 +90,7 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   it('can detect ancestor-leaf relations', () => {
-    const nestedStyles = `
-      .foo-sqkd-deadbeef {
-        color: fuchsia;
-
-        a {
-          border: 0;
-
-          .bar-sqkd-fadedbabe {
-            padding: 1px;
-          }
-        }
-      }
-    `;
-    return analyzeSelectors(nestedStyles, (remSqkdSels) => {
+    return analyzeSelectors(basicNestedStyles, (remSqkdSels) => {
       expect(remSqkdSels[0]).toEqual('bar-sqkd-fadedbabe');
       expect(remSqkdSels).toContain('foo-sqkd-deadbeef');
     });
