@@ -67,6 +67,7 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   beforeEach(function () {
+    this.shellCalls = [];
     mock({
       // eslint-disable-next-line global-require
       'stats.json': JSON.stringify(require('../helpers/stats.json')),
@@ -74,9 +75,24 @@ describe('Squeaky heuristic plugin', () => {
 
     /* eslint-disable global-require */
     this.spawnSync = require('child_process').spawnSync;
-    require('child_process').spawnSync = (shellCmd) => {
+    require('child_process').spawnSync = (shellCmd, ...args) => {
+      this.shellCalls.push([shellCmd, ...args]);
+      const [flag, actualCmd = ''] = args[0];
       /* eslint-enable global-require */
-      const stdout = shellCmd === 'grep' ? this.viewFiles : this.fileName;
+      let stdout = shellCmd === 'grep' ? this.viewFiles : this.fileName;
+      if (shellCmd === 'sh') {
+        const subCmd = actualCmd.split(' ').shift();
+        switch (subCmd) {
+          case 'echo':
+            stdout = this.findSelFiles || ['row.js', 'cell.js'].join('\n');
+            break;
+          case 'grep':
+            stdout = this.getSqkdFiles || ['table.js','index.js', 'row.js', 'header.js', 'main.js'].join('\n');
+            break;
+          default:
+            break;
+        }
+      }
       return {
         stderr: '',
         stdout,
