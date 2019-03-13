@@ -61,6 +61,27 @@ function analyzeSelectors(theStyles, callback) {
   });
 }
 
+// Detect if any sort of traversal up the file/module hierarchy occurred
+function dependencyCheck(filterCB, expectCB, runOpts) {
+  return run(basicNestedStyles, () => {
+    // eslint-disable-next-line no-console
+    const depLog = console.log.calls.allArgs().filter(logged => logged.filter(filterCB).length);
+    expectCB(depLog);
+  }, runOpts);
+}
+
+// Helper method to assert ancestral traversal is ignored
+function ignoreFiles() {
+  return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:'),
+    (depLog) => {
+      const analyzedFiles = depLog.map((deps) => {
+        const [depFile] = deps;
+        return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
+      });
+      expect(uniq(analyzedFiles).length).toEqual(1);
+    }, this.pluginOpts);
+}
+
 describe('Squeaky heuristic plugin', () => {
   beforeAll(function () {
     this.viewFiles = this.viewFiles || ['dummy.js'];
@@ -247,15 +268,11 @@ describe('Squeaky heuristic plugin', () => {
       delete this.findSelFiles;
     });
 
-    it('traverses parent file of filter arguments', function() {
-      return run(basicNestedStyles, () => {
-        const depLog = console.log.calls.allArgs().filter((logged) => {
-          return logged.filter((entries) => {
-            return typeof entries === 'string' && entries.includes('Finding dependencies of:') && entries.includes('parent.js');
-          }).length;
-        });
-        expect(depLog.length).toBeGreaterThan(0);
-      });
+    it('traverses parent file of filter arguments', function () {
+      return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:') && entries.includes('parent.js'),
+        (depLog) => {
+          expect(depLog.length).toBeGreaterThan(0);
+        }, this.pluginOpts);
     });
   });
 
@@ -273,20 +290,7 @@ describe('Squeaky heuristic plugin', () => {
       delete this.pluginOpts;
     });
 
-    it('ignores any other file', function () {
-      return run(basicNestedStyles, () => {
-        const depLog = console.log.calls.allArgs().filter((logged) => {
-          return logged.filter((entries) => {
-            return typeof entries === 'string' && entries.includes('Finding dependencies of:');
-          }).length;
-        });
-        const analyzedFiles = depLog.map((deps) => {
-          const [depFile] = deps;
-          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
-        });
-        expect(uniq(analyzedFiles).length).toEqual(1);
-      }, this.pluginOpts);
-    });
+    it('ignores any other file', () => ignoreFiles());
   });
 
   describe('with only common chunked included files containing the namespaced selector', () => {
@@ -301,20 +305,7 @@ describe('Squeaky heuristic plugin', () => {
       delete this.pluginOpts;
     });
 
-    it('ignores any other file without a match', function () {
-      return run(basicNestedStyles, () => {
-        const depLog = console.log.calls.allArgs().filter((logged) => {
-          return logged.filter((entries) => {
-            return typeof entries === 'string' && entries.includes('Finding dependencies of:');
-          }).length;
-        });
-        const analyzedFiles = depLog.map((deps) => {
-          const [depFile] = deps;
-          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
-        });
-        expect(uniq(analyzedFiles).length).toEqual(1);
-      }, this.pluginOpts);
-    });
+    it('ignores any other file without a match', () => ignoreFiles());
   });
 
   describe('without an include or exclude', () => {
@@ -329,20 +320,7 @@ describe('Squeaky heuristic plugin', () => {
       delete this.pluginOpts;
     });
 
-    it('ignores all other files', function () {
-      return run(basicNestedStyles, () => {
-        const depLog = console.log.calls.allArgs().filter((logged) => {
-          return logged.filter((entries) => {
-            return typeof entries === 'string' && entries.includes('Finding dependencies of:');
-          }).length;
-        });
-        const analyzedFiles = depLog.map((deps) => {
-          const [depFile] = deps;
-          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
-        });
-        expect(uniq(analyzedFiles).length).toEqual(1);
-      }, this.pluginOpts);
-    });
+    it('ignores all other files', () => ignoreFiles());
   });
 
   describe('with a common include', () => {
