@@ -19,13 +19,9 @@ let commonInclude;
 // Is it a legacy JS/Coffee/ECO file?
 function isFilteredFile(filterFile) {
   // File can match any of these RegExps
-  const fileIncludes = filterInclude.some((filt) => {
-    return filt.test(filterFile);
-  });
+  const fileIncludes = filterInclude.some(filt => filt.test(filterFile));
   // File should avoid matching any of these
-  const fileExcludes = filterExclude.some((filt) => {
-    return filt.test(filterFile);
-  });
+  const fileExcludes = filterExclude.some(filt => filt.test(filterFile));
   return fileIncludes
     && !fileExcludes;
 }

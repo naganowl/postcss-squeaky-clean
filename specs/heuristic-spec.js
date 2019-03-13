@@ -78,7 +78,7 @@ describe('Squeaky heuristic plugin', () => {
     this.spawnSync = require('child_process').spawnSync;
     require('child_process').spawnSync = (shellCmd, ...args) => {
       this.shellCalls.push([shellCmd, ...args]);
-      const [flag, actualCmd = ''] = args[0];
+      const [, actualCmd = ''] = args[0];
       /* eslint-enable global-require */
       let stdout = shellCmd === 'grep' ? this.viewFiles : this.fileName;
       if (shellCmd === 'sh') {
@@ -88,7 +88,7 @@ describe('Squeaky heuristic plugin', () => {
             stdout = this.findSelFiles || ['row.js', 'cell.js'].join('\n');
             break;
           case 'grep':
-            stdout = this.getSqkdFiles || ['table.js','index.js', 'row.js', 'header.js', 'main.js'].join('\n');
+            stdout = this.getSqkdFiles || ['table.js', 'index.js', 'row.js', 'header.js', 'main.js'].join('\n');
             break;
           default:
             break;
@@ -109,12 +109,10 @@ describe('Squeaky heuristic plugin', () => {
     mock.restore();
   });
 
-  it('can detect ancestor-leaf relations', () => {
-    return analyzeSelectors(basicNestedStyles, (remSqkdSels) => {
-      expect(remSqkdSels[0]).toEqual('bar-sqkd-fadedbabe');
-      expect(remSqkdSels).toContain('foo-sqkd-deadbeef');
-    });
-  });
+  it('can detect ancestor-leaf relations', () => analyzeSelectors(basicNestedStyles, (remSqkdSels) => {
+    expect(remSqkdSels[0]).toEqual('bar-sqkd-fadedbabe');
+    expect(remSqkdSels).toContain('foo-sqkd-deadbeef');
+  }));
 
   it('can detect top level selectors', () => {
     const nestedStyles = `
@@ -239,12 +237,12 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   describe('with a common chunked view file containing the namespaced selector', () => {
-    beforeAll(function() {
+    beforeAll(function () {
       this.fileName = './app/assets/javascripts/backbone/child.js';
       this.findSelFiles = this.fileName;
     });
 
-    afterAll(function() {
+    afterAll(function () {
       delete this.fileName;
       delete this.findSelFiles;
     });
@@ -262,7 +260,7 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   describe('with a common chunked excluded file containing the namespaced selector', () => {
-    beforeAll(function() {
+    beforeAll(function () {
       this.pluginOpts = Object.assign({}, pluginOpts, {
         filterInclude: [/frontend/],
         filterExclude: [/\.js/],
@@ -270,12 +268,12 @@ describe('Squeaky heuristic plugin', () => {
       this.fileName = './frontend/features/apply-template/selectors/index.scss';
     });
 
-    afterAll(function() {
+    afterAll(function () {
       delete this.fileName;
       delete this.pluginOpts;
     });
 
-    it('ignores any other file', function() {
+    it('ignores any other file', function () {
       return run(basicNestedStyles, () => {
         const depLog = console.log.calls.allArgs().filter((logged) => {
           return logged.filter((entries) => {
@@ -284,7 +282,7 @@ describe('Squeaky heuristic plugin', () => {
         });
         const analyzedFiles = depLog.map((deps) => {
           const [depFile] = deps;
-          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
+          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
         });
         expect(uniq(analyzedFiles).length).toEqual(1);
       }, this.pluginOpts);
@@ -292,18 +290,18 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   describe('with only common chunked included files containing the namespaced selector', () => {
-    beforeAll(function() {
+    beforeAll(function () {
       this.pluginOpts = Object.assign({}, pluginOpts, {
         filterInclude: [/backend/],
         filterExclude: undefined,
       });
     });
 
-    afterAll(function() {
+    afterAll(function () {
       delete this.pluginOpts;
     });
 
-    it('ignores any other file without a match', function() {
+    it('ignores any other file without a match', function () {
       return run(basicNestedStyles, () => {
         const depLog = console.log.calls.allArgs().filter((logged) => {
           return logged.filter((entries) => {
@@ -312,7 +310,7 @@ describe('Squeaky heuristic plugin', () => {
         });
         const analyzedFiles = depLog.map((deps) => {
           const [depFile] = deps;
-          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
+          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
         });
         expect(uniq(analyzedFiles).length).toEqual(1);
       }, this.pluginOpts);
@@ -320,18 +318,18 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   describe('without an include or exclude', () => {
-    beforeAll(function() {
+    beforeAll(function () {
       this.pluginOpts = Object.assign({}, pluginOpts, {
         filterInclude: undefined,
         filterExclude: undefined,
       });
     });
 
-    afterAll(function() {
+    afterAll(function () {
       delete this.pluginOpts;
     });
 
-    it('ignores all other files', function() {
+    it('ignores all other files', function () {
       return run(basicNestedStyles, () => {
         const depLog = console.log.calls.allArgs().filter((logged) => {
           return logged.filter((entries) => {
@@ -340,7 +338,7 @@ describe('Squeaky heuristic plugin', () => {
         });
         const analyzedFiles = depLog.map((deps) => {
           const [depFile] = deps;
-          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
+          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
         });
         expect(uniq(analyzedFiles).length).toEqual(1);
       }, this.pluginOpts);
@@ -348,18 +346,18 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   describe('with a common include', () => {
-    beforeAll(function() {
+    beforeAll(function () {
       this.pluginOpts = Object.assign({}, pluginOpts, {
         filterInclude: [/frontend/],
         commonInclude: /index\.js/,
       });
     });
 
-    afterAll(function() {
+    afterAll(function () {
       delete this.pluginOpts;
     });
 
-    it('removes matched path from ancestor', function() {
+    it('removes matched path from ancestor', function () {
       return run(basicNestedStyles, () => {
         const lastReplace = this.shellCalls.slice(-1)[0][1];
         expect(lastReplace[0]).toContain('replace_selectors');
