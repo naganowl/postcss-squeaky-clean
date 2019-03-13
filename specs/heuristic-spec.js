@@ -9,6 +9,8 @@ const pluginOpts = {
     'app/assets',
     'app/views',
   ],
+  filterInclude: [/app\/.+backbone\//],
+  filterExclude: [/\.scss/],
   scssPath: 'stylesheets/internal/table.scss',
   statsPath: './stats.json',
 };
@@ -242,14 +244,19 @@ describe('Squeaky heuristic plugin', () => {
 
   describe('with a common chunked excluded file containing the namespaced selector', () => {
     beforeAll(function() {
-      this.fileName = './app/assets/javascripts/backbone/child.scss';
+      this.pluginOpts = Object.assign({}, pluginOpts, {
+        filterInclude: [/frontend/],
+        filterExclude: [/\.js/],
+      });
+      this.fileName = './frontend/features/apply-template/selectors/index.scss';
     });
 
     afterAll(function() {
       delete this.fileName;
+      delete this.pluginOpts;
     });
 
-    it('ignores any other file', () => {
+    it('ignores any other file', function() {
       return run(basicNestedStyles, () => {
         const depLog = console.log.calls.allArgs().filter((logged) => {
           return logged.filter((entries) => {
@@ -261,8 +268,65 @@ describe('Squeaky heuristic plugin', () => {
           return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
         });
         expect(uniq(analyzedFiles).length).toEqual(1);
+      }, this.pluginOpts);
+    });
+  });
+
+  describe('with only common chunked included files containing the namespaced selector', () => {
+    beforeAll(function() {
+      this.pluginOpts = Object.assign({}, pluginOpts, {
+        filterInclude: [/backend/],
+        filterExclude: undefined,
       });
     });
+
+    afterAll(function() {
+      delete this.pluginOpts;
+    });
+
+    it('ignores any other file without a match', function() {
+      return run(basicNestedStyles, () => {
+        const depLog = console.log.calls.allArgs().filter((logged) => {
+          return logged.filter((entries) => {
+            return typeof entries === 'string' && entries.includes('Finding dependencies of:');
+          }).length;
+        });
+        const analyzedFiles = depLog.map((deps) => {
+          const [depFile] = deps;
+          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
+        });
+        expect(uniq(analyzedFiles).length).toEqual(1);
+      }, this.pluginOpts);
+    });
+  });
+
+  describe('without an include or exclude', () => {
+    beforeAll(function() {
+      this.pluginOpts = Object.assign({}, pluginOpts, {
+        filterInclude: undefined,
+        filterExclude: undefined,
+      });
+    });
+
+    afterAll(function() {
+      delete this.pluginOpts;
+    });
+
+    it('ignores all other files', function() {
+      return run(basicNestedStyles, () => {
+        const depLog = console.log.calls.allArgs().filter((logged) => {
+          return logged.filter((entries) => {
+            return typeof entries === 'string' && entries.includes('Finding dependencies of:');
+          }).length;
+        });
+        const analyzedFiles = depLog.map((deps) => {
+          const [depFile] = deps;
+          return (depFile.match(/(\/\w+)+/) || ['dummy'])[0]
+        });
+        expect(uniq(analyzedFiles).length).toEqual(1);
+      }, this.pluginOpts);
+    });
+  });
   });
 
   describe('without a webpack JSON file', () => {

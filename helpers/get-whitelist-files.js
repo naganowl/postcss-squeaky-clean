@@ -5,12 +5,26 @@ const uniq = require('lodash.uniq');
 const findSelectorFiles = require('./find-selector-files');
 const sourceFiles = require('./get-squeaky-files');
 
+// Parsed from passed in JSON file generated via webpack
 let moduleData;
+
+// Arrays of RegExps to decide which types of files should be traversed.
+// `filterInclude` takes precedence over `filterExclude`
+let filterInclude;
+let filterExclude;
 
 // Is it a legacy JS/Coffee/ECO file?
 function isFilteredFile(filterFile) {
-  return /app\/.+backbone\//.test(filterFile)
-    && !/\.scss/.test(filterFile);
+  // File can match any of these RegExps
+  const fileIncludes = filterInclude.some((filt) => {
+    return filt.test(filterFile);
+  });
+  // File should avoid matching any of these
+  const fileExcludes = filterExclude.some((filt) => {
+    return filt.test(filterFile);
+  });
+  return fileIncludes
+    && !fileExcludes;
 }
 
 /*
@@ -25,6 +39,8 @@ function isFilteredFile(filterFile) {
 module.exports = {
   init(opts) {
     const { directories, statsPath } = opts;
+    // Default to any path/file without a filter
+    ({ filterInclude = [], filterExclude = [] } = opts);
 
     try {
       // eslint-disable-next-line import/no-dynamic-require

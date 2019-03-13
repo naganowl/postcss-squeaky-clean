@@ -35,6 +35,7 @@
           "modules": [
             {
               "id": 57,
+              "identifier": "./frontend/features/apply-template/selectors/index.js",
               "name": "./frontend/features/apply-template/selectors/index.js",
               "index": 2907,
               "index2": 2914,
@@ -52,6 +53,38 @@
               "assets": [],
               "issuerId": 58,
               "issuerName": "./frontend/features/apply-template/action-creators/action-creators.js",
+              "profile": {
+                "factory": 331,
+                "building": 219
+              },
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "usedExports": true,
+              "providedExports": null,
+              "optimizationBailout": [],
+              "depth": 7
+            },
+            {
+              "id": 58,
+              "identifier": "./frontend/features/apply-template/selectors/index.js",
+              "name": "./frontend/features/apply-template/selectors/index.js",
+              "index": 2907,
+              "index2": 2914,
+              "size": 2855,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+                0,
+                3,
+                7,
+                8
+              ],
+              "assets": [],
+              "issuerId": 58,
+              "issuerName": "./frontend/features/apply-template/selectors/index.scss",
               "profile": {
                 "factory": 331,
                 "building": 219
