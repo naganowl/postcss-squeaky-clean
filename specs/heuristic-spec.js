@@ -241,13 +241,15 @@ describe('Squeaky heuristic plugin', () => {
   describe('with a common chunked view file containing the namespaced selector', () => {
     beforeAll(function() {
       this.fileName = './app/assets/javascripts/backbone/child.js';
+      this.findSelFiles = this.fileName;
     });
 
     afterAll(function() {
       delete this.fileName;
+      delete this.findSelFiles;
     });
 
-    it('traverses parent file of filter arguments', () => {
+    it('traverses parent file of filter arguments', function() {
       return run(basicNestedStyles, () => {
         const depLog = console.log.calls.allArgs().filter((logged) => {
           return logged.filter((entries) => {
