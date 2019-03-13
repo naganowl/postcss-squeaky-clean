@@ -13,6 +13,9 @@ let moduleData;
 let filterInclude;
 let filterExclude;
 
+// RegExp for whitelist of paths to allow from CommonChunk modules
+let commonInclude;
+
 // Is it a legacy JS/Coffee/ECO file?
 function isFilteredFile(filterFile) {
   // File can match any of these RegExps
@@ -40,7 +43,7 @@ module.exports = {
   init(opts) {
     const { directories, statsPath } = opts;
     // Default to any path/file without a filter
-    ({ filterInclude = [], filterExclude = [] } = opts);
+    ({ filterInclude = [], filterExclude = [], commonInclude = /.*/ } = opts);
 
     try {
       // eslint-disable-next-line import/no-dynamic-require
@@ -120,7 +123,7 @@ module.exports = {
       const { identifier } = commonChunk;
 
       if (isFilteredFile(identifier)) {
-        const [filePath] = identifier.match(/app\/.+$/);
+        const [filePath] = identifier.match(commonInclude);
         memo.push(filePath);
       }
 

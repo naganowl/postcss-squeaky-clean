@@ -11,6 +11,7 @@ const pluginOpts = {
   ],
   filterInclude: [/app\/.+backbone\//],
   filterExclude: [/\.scss/],
+  commonInclude: /app\/.+$/,
   scssPath: 'stylesheets/internal/table.scss',
   statsPath: './stats.json',
 };
@@ -343,6 +344,27 @@ describe('Squeaky heuristic plugin', () => {
       }, this.pluginOpts);
     });
   });
+
+  describe('with a common include', () => {
+    beforeAll(function() {
+      this.pluginOpts = Object.assign({}, pluginOpts, {
+        filterInclude: [/frontend/],
+        commonInclude: /index\.js/,
+      });
+    });
+
+    afterAll(function() {
+      delete this.pluginOpts;
+    });
+
+    it('removes matched path from ancestor', function() {
+      return run(basicNestedStyles, () => {
+        const lastReplace = this.shellCalls.slice(-1)[0][1];
+        expect(lastReplace[0]).toContain('replace_selectors');
+        expect(lastReplace[1]).toEqual('.foo-sqkd-deadbeef');
+        expect(lastReplace[2]).not.toContain('index.js');
+      }, this.pluginOpts);
+    });
   });
 
   describe('without a webpack JSON file', () => {
