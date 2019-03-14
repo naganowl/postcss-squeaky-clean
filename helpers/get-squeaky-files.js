@@ -1,3 +1,4 @@
+const compact = require('lodash.compact');
 const runShell = require('./run-shell');
 
 let directoryList;
@@ -11,6 +12,6 @@ module.exports = {
     directoryList = directories.join(' ');
   },
   find() {
-    return runShell('sh', ['-c', findCmd]).split('\n').slice(0, -1);
+    return compact(runShell('sh', ['-c', findCmd]).split('\n'));
   },
 };
