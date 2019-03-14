@@ -260,6 +260,25 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
+  describe('with view files containing namespaced selectors', () => {
+    beforeAll(function () {
+      this.findSelFiles = ['body.js', 'footer.js'].join('\n');
+    });
+
+    afterAll(function () {
+      delete this.findSelFiles;
+    });
+
+    it('checks them for their dependencies', function () {
+      return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:')
+        && (entries.includes('body.js') || entries.includes('footer.js')),
+      (depLog) => {
+        expect(depLog.filter(log => log[0].includes('body.js')).length).toBeGreaterThan(0);
+        expect(depLog.filter(log => log[0].includes('footer.js')).length).toBeGreaterThan(0);
+      }, this.pluginOpts);
+    });
+  });
+
   describe('with a common chunked view file containing the namespaced selector', () => {
     beforeAll(function () {
       this.fileName = './app/assets/javascripts/backbone/child.js';
