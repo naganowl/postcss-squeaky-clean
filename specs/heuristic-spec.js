@@ -1,6 +1,7 @@
 const mock = require('mock-fs');
 
 const postcss = require('postcss');
+const clonedeep = require('lodash.clonedeep');
 const uniq = require('lodash.uniq');
 const plugin = require('../plugins/heuristic');
 const statsObj = require('../helpers/stats.json');
@@ -381,6 +382,39 @@ describe('Squeaky heuristic plugin', () => {
           expect(message).toContain('Dead file!');
           expect(message).toContain(this.fileName);
         });
+    });
+  });
+
+  describe('with a referenced leaf template file', () => {
+    beforeAll(function () {
+      this.fileName = './app/assets/javascripts/backbone/row.eco';
+      this.findSelFiles = this.fileName;
+    });
+
+    beforeEach(function () {
+      const statsPath = clonedeep(statsObj);
+      statsPath.children[1].modules = [{
+        id: 1,
+        name: './app/assets/javascripts/backbone/row.eco',
+        index: 122,
+        issuerId: 607,
+        issuerName: './app/assets/javascripts/backbone/row.js',
+      }];
+      this.runOpts = Object.assign({}, pluginOpts, {
+        statsPath,
+      });
+    });
+
+    afterAll(function () {
+      delete this.fileName;
+      delete this.findSelFiles;
+    });
+
+    it('traverses the parent file', function () {
+      return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Found parent file') && entries.includes('row.js'),
+        (depLog) => {
+          expect(depLog.length).toBeGreaterThan(0);
+        }, this.runOpts);
     });
   });
 });
