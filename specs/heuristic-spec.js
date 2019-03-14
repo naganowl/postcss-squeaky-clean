@@ -7,13 +7,13 @@ const plugin = require('../plugins/heuristic');
 const statsObj = require('../helpers/stats.json');
 
 const pluginOpts = {
+  commonInclude: /app\/.+$/,
   directories: [
     'app/assets',
     'app/views',
   ],
-  commonInclude: /app\/.+$/,
-  filterInclude: [/app\/.+backbone\//],
   filterExclude: [/\.scss/],
+  filterInclude: [/app\/.+backbone\//],
   scssPath: 'stylesheets/internal/table.scss',
   statsPath: './stats.json',
   templateLeafInclude: /\.eco$/,
