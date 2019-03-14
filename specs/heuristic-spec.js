@@ -171,6 +171,49 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
+  it('can detect multiple selectors', () => {
+    const nestedStyles = `
+      .foo-sqkd-deadbeef, .quux-sqkd-deafbeef {
+        color: fuchsia;
+
+        a {
+          border: 0;
+
+          .bar-sqkd-fadedbabe, .baz-sqkd-beeffade {
+            padding: 1px;
+          }
+        }
+      }
+    `;
+    return analyzeSelectors(nestedStyles, (remSqkdSels, ancSqkdSels) => {
+      expect(remSqkdSels[0]).toEqual('bar-sqkd-fadedbabe');
+      expect(remSqkdSels).toContain('baz-sqkd-beeffade');
+      expect(ancSqkdSels).toContain('.foo-sqkd-deadbeef');
+      expect(ancSqkdSels).toContain('.quux-sqkd-deafbeef');
+      expect(remSqkdSels.indexOf('foo-sqkd-deadbeef')).toBeGreaterThan(remSqkdSels.indexOf('baz-sqkd-beeffade'));
+      expect(remSqkdSels.indexOf('quux-sqkd-deafbeef')).toBeGreaterThan(remSqkdSels.indexOf('baz-sqkd-beeffade'));
+    });
+  });
+
+  it('ignores pseudo-element selectors', () => {
+    const nestedStyles = `
+      .foo-sqkd-deadbeef {
+        color: fuchsia;
+
+        a {
+          border: 0;
+
+          .bar-sqkd-fadedbabe:not(.baz-sqkd-beeffade) {
+            padding: 1px;
+          }
+        }
+      }
+    `;
+    return analyzeSelectors(nestedStyles, (remSqkdSels) => {
+      expect(remSqkdSels).not.toContain('baz-sqkd-beeffade');
+    });
+  });
+
   it('can detect ancestral tag selectors', () => {
     const nestedStyles = `
       .foo-sqkd-deadbeef {
@@ -246,6 +289,29 @@ describe('Squeaky heuristic plugin', () => {
           border: 0;
 
           & ~ .bar-sqkd-fadedbabe {
+            padding: 1px;
+          }
+        }
+      }
+    `;
+    return analyzeSelectors(nestedStyles, (remSqkdSels, ancSqkdSels) => {
+      expect(remSqkdSels[0]).toEqual('bar-sqkd-fadedbabe');
+      expect(remSqkdSels).toContain('quux-sqkd-deafbeef');
+      expect(remSqkdSels).toContain('foo-sqkd-deadbeef');
+      expect(ancSqkdSels).not.toContain('.quux-sqkd-deafbeef');
+      expect(remSqkdSels.indexOf('foo-sqkd-deadbeef')).toBeGreaterThan(remSqkdSels.indexOf('quux-sqkd-deafbeef'));
+    });
+  });
+
+  it('can handle dangling parent combinators with pseudo-selectors', () => {
+    const nestedStyles = `
+      .foo-sqkd-deadbeef {
+        color: fuchsia;
+
+        .quux-sqkd-deafbeef {
+          border: 0;
+
+          &:hover ~ .bar-sqkd-fadedbabe {
             padding: 1px;
           }
         }
