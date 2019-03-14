@@ -9,9 +9,9 @@ const pluginOpts = {
     'app/assets',
     'app/views',
   ],
+  commonInclude: /app\/.+$/,
   filterInclude: [/app\/.+backbone\//],
   filterExclude: [/\.scss/],
-  commonInclude: /app\/.+$/,
   scssPath: 'stylesheets/internal/table.scss',
   statsPath: './stats.json',
 };
@@ -354,7 +354,7 @@ describe('Squeaky heuristic plugin', () => {
     it('throws an error', () => {
       /* eslint-disable no-console */
       expect(console.log).toHaveBeenCalled();
-      expect(console.log.calls.mostRecent().args.filter(logged => logged.includes('webpack --json'))).toBeTruthy();
+      expect(console.log.calls.mostRecent().args.filter(logged => logged.includes('webpack --json')).length).toEqual(1);
       /* eslint-enable no-console */
     });
   });
