@@ -3,6 +3,7 @@ const mock = require('mock-fs');
 const postcss = require('postcss');
 const uniq = require('lodash.uniq');
 const plugin = require('../plugins/heuristic');
+const statsObj = require('../helpers/stats.json');
 
 const pluginOpts = {
   directories: [
@@ -92,8 +93,7 @@ describe('Squeaky heuristic plugin', () => {
   beforeEach(function () {
     this.shellCalls = [];
     mock({
-      // eslint-disable-next-line global-require
-      'stats.json': JSON.stringify(require('../helpers/stats.json')),
+      'stats.json': JSON.stringify(statsObj),
     });
 
     /* eslint-disable global-require */
