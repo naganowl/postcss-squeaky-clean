@@ -14,6 +14,7 @@ const pluginOpts = {
   filterExclude: [/\.scss/],
   scssPath: 'stylesheets/internal/table.scss',
   statsPath: './stats.json',
+  templateLeafInclude: /\.eco$/,
 };
 
 const basicNestedStyles = `
@@ -356,6 +357,30 @@ describe('Squeaky heuristic plugin', () => {
       expect(console.log).toHaveBeenCalled();
       expect(console.log.calls.mostRecent().args.filter(logged => logged.includes('webpack --json')).length).toEqual(1);
       /* eslint-enable no-console */
+    });
+  });
+
+  describe('with an unreferenced leaf template file', () => {
+    beforeAll(function () {
+      this.fileName = './app/assets/javascripts/backbone/child.eco';
+      this.findSelFiles = this.fileName;
+    });
+
+    afterAll(function () {
+      delete this.fileName;
+      delete this.findSelFiles;
+    });
+
+    it('alerts to be removed', function () {
+      return postcss([plugin(pluginOpts)]).process(basicNestedStyles)
+        .then(() => {
+          // Should fail rather than go into this case
+          expect(true).toBeFalsy();
+        }, (e) => {
+          const { message } = e;
+          expect(message).toContain('Dead file!');
+          expect(message).toContain(this.fileName);
+        });
     });
   });
 });
