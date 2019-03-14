@@ -14,22 +14,9 @@ const ancestorSelMap = {};
 // Map squeaky selectors to it's associated rule object for chained/multiple selectors
 const selectorNodeMap = {};
 
+// Strings to decide the feature name for the stylesheet and whitelisted view files
 let styleFeature;
-
-function getFeatureName(filePath) {
-  let pathMatch;
-
-  if (/\.s?css$/.test(filePath)) {
-    pathMatch = filePath.match(/stylesheets\/internal\/(?:features|pages)\/([\w-]+)/)
-      || filePath.match(/stylesheets\/internal\/([\w-]+)/) || [];
-  } else {
-    // JS/Coffee file
-    pathMatch = filePath.match(/javascripts\/(?:entries|external)\/([\w-]+)/)
-      || filePath.match(/backbone\/features\/([\w-]+)/) || [];
-  }
-
-  return pathMatch[1];
-}
+let getFeatureName;
 
 // Return squeaky selector entries to find squeaky ancestor
 function filterSqkdSelectors(selectorArr) {
@@ -273,14 +260,14 @@ function parseRuleSelectors(theRule, collectedSelArr) {
 
 module.exports = postcss.plugin('squeakyHeuristicPlugin', (opts = {}) => {
   const {
-    directories, scssPath, statsPath, filterInclude, filterExclude, commonInclude,
+    directories, statsPath, filterInclude, filterExclude, commonInclude,
   } = opts;
+  ({ getFeatureName, styleFeature } = opts);
   findSelectorFiles.init({ directories });
   getWhitelistFiles.init({
     directories, statsPath, filterInclude, filterExclude, commonInclude,
   });
   squeakyFiles.init({ directories });
-  styleFeature = getFeatureName(scssPath);
 
   return function main(css) {
     let selectorArr = [];

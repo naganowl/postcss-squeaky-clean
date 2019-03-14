@@ -14,8 +14,9 @@ const pluginOpts = {
   ],
   filterExclude: [/\.scss/],
   filterInclude: [/app\/.+backbone\//],
-  scssPath: 'stylesheets/internal/table.scss',
+  getFeatureName: feat => feat,
   statsPath: './stats.json',
+  styleFeature: 'table.scss',
   templateLeafInclude: /\.eco$/,
 };
 
@@ -415,6 +416,35 @@ describe('Squeaky heuristic plugin', () => {
         (depLog) => {
           expect(depLog.length).toBeGreaterThan(0);
         }, this.runOpts);
+    });
+  });
+
+  describe('with namespaced files matching the stylesheet name', () => {
+    beforeAll(function () {
+      this.getSqkdFiles = ['main.js', 'index.js', 'header.js', 'item.js'].join('\n');
+      this.pluginOpts = Object.assign({}, pluginOpts, {
+        getFeatureName: featName => featName.split('.').shift(),
+        styleFeature: 'header',
+      });
+    });
+
+    afterAll(function () {
+      delete this.getSqkdFiles;
+      delete this.pluginOpts;
+    });
+
+    it('removes those matching files from the whitelist while keeping the rest', function () {
+      return run(basicNestedStyles, () => {
+        const lastReplace = this.shellCalls.slice(-1)[0][1];
+        const [shellScript, selector, files] = lastReplace;
+        expect(shellScript).toContain('replace_selectors');
+        expect(selector).toEqual('.foo-sqkd-deadbeef');
+        expect(files).not.toContain('header.js');
+        expect(files).toContain('index.js');
+        expect(files).toContain('main.js');
+        expect(files).toContain('item.js');
+        expect(files.length).toEqual(3);
+      }, this.pluginOpts);
     });
   });
 });
