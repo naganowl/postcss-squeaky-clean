@@ -15,8 +15,8 @@ const pluginOpts = {
   filterExclude: [/\.scss/],
   filterInclude: [/app\/.+backbone\//],
   getFeatureName: feat => feat,
+  scssPath: 'app/assets/stylesheets/table.scss',
   statsPath: './stats.json',
-  styleFeature: 'table.scss',
   templateLeafInclude: /\.eco$/,
 };
 
@@ -509,7 +509,7 @@ describe('Squeaky heuristic plugin', () => {
       this.getSqkdFiles = ['main.js', 'index.js', 'header.js', 'item.js'].join('\n');
       this.pluginOpts = Object.assign({}, pluginOpts, {
         getFeatureName: featName => featName.split('.').shift(),
-        styleFeature: 'header',
+        scssPath: 'header.scss',
       });
     });
 
