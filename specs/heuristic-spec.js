@@ -83,7 +83,7 @@ function ignoreFiles() {
         return (depFile.match(/(\/\w+)+/) || ['dummy'])[0];
       });
       expect(uniq(analyzedFiles).length).toEqual(1);
-    }, this.pluginOpts);
+    }, pluginOpts);
 }
 
 describe('Squeaky heuristic plugin', () => {
@@ -341,7 +341,7 @@ describe('Squeaky heuristic plugin', () => {
       (depLog) => {
         expect(depLog.filter(log => log[0].includes('body.js')).length).toBeGreaterThan(0);
         expect(depLog.filter(log => log[0].includes('footer.js')).length).toBeGreaterThan(0);
-      }, this.pluginOpts);
+      }, pluginOpts);
     });
   });
 
@@ -360,7 +360,7 @@ describe('Squeaky heuristic plugin', () => {
       return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:') && entries.includes('parent.js'),
         (depLog) => {
           expect(depLog.length).toBeGreaterThan(0);
-        }, this.pluginOpts);
+        }, pluginOpts);
     });
   });
 
