@@ -260,13 +260,13 @@ function parseRuleSelectors(theRule, collectedSelArr) {
 
 module.exports = postcss.plugin('squeakyHeuristicPlugin', (opts = {}) => {
   const {
-    directories, scssPath, statsPath, filterInclude, filterExclude, commonInclude
+    directories, scssPath, statsPath, filterInclude, filterExclude, commonInclude, sqkdExclude,
   } = opts;
   ({ getFeatureName } = opts);
   styleFeature = getFeatureName(scssPath);
   findSelectorFiles.init({ directories });
   getWhitelistFiles.init({
-    directories, statsPath, filterInclude, filterExclude, commonInclude,
+    directories, statsPath, filterInclude, filterExclude, commonInclude, sqkdExclude,
   });
   squeakyFiles.init({ directories });
 

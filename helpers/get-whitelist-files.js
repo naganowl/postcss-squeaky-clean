@@ -12,6 +12,8 @@ let moduleData;
 // `filterInclude` takes precedence over `filterExclude`
 let filterInclude;
 let filterExclude;
+// RegExp to filter down returned namespaced files
+let sqkdExclude;
 
 // RegExp for whitelist of paths to allow from CommonChunk modules
 let commonInclude;
@@ -39,7 +41,7 @@ module.exports = {
   init(opts) {
     const { directories, statsPath } = opts;
     // Default to any path/file without a filter
-    ({ filterInclude = [], filterExclude = [], commonInclude = /.*/ } = opts);
+    ({ filterInclude = [], filterExclude = [], commonInclude = /.*/, sqkdExclude = /(?!)/ } = opts);
 
     try {
       // eslint-disable-next-line import/no-dynamic-require
@@ -58,7 +60,7 @@ module.exports = {
     let parentFile;
     let sqkdFile;
     const parentFiles = [];
-    let filesToCheck = findSelectorFiles.find(selectorArr);
+    let filesToCheck = findSelectorFiles.find(selectorArr).filter(selFile => !sqkdExclude.test(selFile));
     const firstLevel = filesToCheck.length;
     // Zero index is bookmarklet, similar to webpack config
     const { chunks, modules } = moduleData.children[1];

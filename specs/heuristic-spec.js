@@ -345,6 +345,28 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
+  describe('with excluded view files containing namespaced selectors', () => {
+    beforeAll(function () {
+      this.findSelFiles = ['body.js', 'main.erb', 'footer.js'].join('\n');
+      this.runOpts = Object.assign({}, pluginOpts, {
+        sqkdExclude: /\.erb/,
+      });
+    });
+
+    afterAll(function () {
+      delete this.runOpts;
+      delete this.findSelFiles;
+    });
+
+    it('checks them for their dependencies', function () {
+      return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:')
+        && entries.includes('main.erb'),
+      (depLog) => {
+        expect(depLog.length).toEqual(0);
+      }, this.runOpts);
+    });
+  });
+
   describe('with a common chunked view file containing the namespaced selector', () => {
     beforeAll(function () {
       this.fileName = './app/assets/javascripts/backbone/child.js';
