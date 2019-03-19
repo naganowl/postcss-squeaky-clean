@@ -1,4 +1,5 @@
 const mock = require('mock-fs');
+const path = require('path');
 
 const postcss = require('postcss');
 const clonedeep = require('lodash.clonedeep');
@@ -323,6 +324,13 @@ describe('Squeaky heuristic plugin', () => {
       expect(remSqkdSels).toContain('foo-sqkd-deadbeef');
       expect(ancSqkdSels).not.toContain('.quux-sqkd-deafbeef');
       expect(remSqkdSels.indexOf('foo-sqkd-deadbeef')).toBeGreaterThan(remSqkdSels.indexOf('quux-sqkd-deafbeef'));
+    });
+  });
+
+  it('uses an absolute path to the replace script', function() {
+    return run(basicNestedStyles, () => {
+      const scriptPath = this.shellCalls.slice(-1)[0][1][0];
+      expect(path.isAbsolute(scriptPath)).toBeTruthy();
     });
   });
 

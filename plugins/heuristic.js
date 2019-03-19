@@ -1,4 +1,5 @@
 const postcss = require('postcss');
+const path = require('path');
 const compact = require('lodash.compact');
 const difference = require('lodash.difference');
 const intersection = require('lodash.intersection');
@@ -302,7 +303,7 @@ module.exports = postcss.plugin('squeakyHeuristicPlugin', (opts = {}) => {
       console.log(selectorArr);
       Object.keys(selFileMap).forEach((sel) => {
         console.log(`Removing ${sel}`);
-        console.log(runShell('sh', ['scripts/replace_selectors.sh', sel, selFileMap[sel]]));
+        const scriptPath = path.resolve(path.join(__dirname, '..', 'scripts', 'replace_selectors.sh'));
       });
       console.log('**********************Ancestor selectors queued up**********************');
       console.log(ancestorSels);
