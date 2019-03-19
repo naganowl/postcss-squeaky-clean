@@ -455,6 +455,22 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
+  describe('with passed in directories', () => {
+    beforeEach(() => {
+      return postcss([plugin(pluginOpts)]).process(basicNestedStyles);
+    });
+
+    it('checks inside them for namespaced files', function() {
+      const grepCalls = this.shellCalls.filter((shellCall) => {
+        return shellCall[1][1].includes('grep');
+      });
+      const grepSqkd = grepCalls.slice(-1)[0][1][1];
+      pluginOpts.directories.forEach((dir) => {
+        expect(grepSqkd).toContain(dir);
+      });
+    });
+  });
+
   describe('without a webpack JSON file', () => {
     beforeEach(() => {
       const runOpts = Object.assign({}, pluginOpts, { statsPath: '' });
