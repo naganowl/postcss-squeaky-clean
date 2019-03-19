@@ -41,7 +41,9 @@ module.exports = {
   init(opts) {
     const { directories, statsPath } = opts;
     // Default to any path/file without a filter
-    ({ filterInclude = [], filterExclude = [], commonInclude = /.*/, sqkdExclude = /(?!)/ } = opts);
+    ({
+      filterInclude = [], filterExclude = [], commonInclude = /.*/, sqkdExclude = /(?!)/,
+    } = opts);
 
     try {
       // eslint-disable-next-line import/no-dynamic-require
@@ -60,7 +62,8 @@ module.exports = {
     let parentFile;
     let sqkdFile;
     const parentFiles = [];
-    let filesToCheck = findSelectorFiles.find(selectorArr).filter(selFile => !sqkdExclude.test(selFile));
+    let filesToCheck = findSelectorFiles.find(selectorArr)
+      .filter(selFile => !sqkdExclude.test(selFile));
     const firstLevel = filesToCheck.length;
     // Zero index is bookmarklet, similar to webpack config
     const { chunks, modules } = moduleData.children[1];

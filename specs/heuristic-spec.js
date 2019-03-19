@@ -327,7 +327,7 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
-  it('uses an absolute path to the replace script', function() {
+  it('uses an absolute path to the replace script', function () {
     return run(basicNestedStyles, () => {
       const scriptPath = this.shellCalls.slice(-1)[0][1][0];
       expect(path.isAbsolute(scriptPath)).toBeTruthy();
@@ -343,14 +343,12 @@ describe('Squeaky heuristic plugin', () => {
       delete this.findSelFiles;
     });
 
-    it('checks them for their dependencies', function () {
-      return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:')
+    it('checks them for their dependencies', () => dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:')
         && (entries.includes('body.js') || entries.includes('footer.js')),
-      (depLog) => {
-        expect(depLog.filter(log => log[0].includes('body.js')).length).toBeGreaterThan(0);
-        expect(depLog.filter(log => log[0].includes('footer.js')).length).toBeGreaterThan(0);
-      }, pluginOpts);
-    });
+    (depLog) => {
+      expect(depLog.filter(log => log[0].includes('body.js')).length).toBeGreaterThan(0);
+      expect(depLog.filter(log => log[0].includes('footer.js')).length).toBeGreaterThan(0);
+    }, pluginOpts));
   });
 
   describe('with excluded view files containing namespaced selectors', () => {
@@ -386,12 +384,10 @@ describe('Squeaky heuristic plugin', () => {
       delete this.findSelFiles;
     });
 
-    it('traverses parent file of filter arguments', function () {
-      return dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:') && entries.includes('parent.js'),
-        (depLog) => {
-          expect(depLog.length).toBeGreaterThan(0);
-        }, pluginOpts);
-    });
+    it('traverses parent file of filter arguments', () => dependencyCheck(entries => typeof entries === 'string' && entries.includes('Finding dependencies of:') && entries.includes('parent.js'),
+      (depLog) => {
+        expect(depLog.length).toBeGreaterThan(0);
+      }, pluginOpts));
   });
 
   describe('with a common chunked excluded file containing the namespaced selector', () => {
@@ -464,14 +460,10 @@ describe('Squeaky heuristic plugin', () => {
   });
 
   describe('with passed in directories', () => {
-    beforeEach(() => {
-      return postcss([plugin(pluginOpts)]).process(basicNestedStyles);
-    });
+    beforeEach(() => postcss([plugin(pluginOpts)]).process(basicNestedStyles));
 
-    it('checks inside them for namespaced files', function() {
-      const grepCalls = this.shellCalls.filter((shellCall) => {
-        return shellCall[1][1].includes('grep');
-      });
+    it('checks inside them for namespaced files', function () {
+      const grepCalls = this.shellCalls.filter(shellCall => shellCall[1][1].includes('grep'));
       const grepSqkd = grepCalls.slice(-1)[0][1][1];
       pluginOpts.directories.forEach((dir) => {
         expect(grepSqkd).toContain(dir);

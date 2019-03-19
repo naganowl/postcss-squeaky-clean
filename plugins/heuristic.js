@@ -304,6 +304,7 @@ module.exports = postcss.plugin('squeakyHeuristicPlugin', (opts = {}) => {
       Object.keys(selFileMap).forEach((sel) => {
         console.log(`Removing ${sel}`);
         const scriptPath = path.resolve(path.join(__dirname, '..', 'scripts', 'replace_selectors.sh'));
+        console.log(runShell('sh', [scriptPath, sel, selFileMap[sel]]));
       });
       console.log('**********************Ancestor selectors queued up**********************');
       console.log(ancestorSels);
