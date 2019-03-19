@@ -110,6 +110,46 @@ modularized with CommonJS modules) to determine the file hierarchy which actuall
 and shared components that could be chunked/split via other webpack plugins. For the most part, this helps wipe out a majority of the extra namespaced selectors
 that are scattered from the `clean` plugin (especially the generically named shared styles).
 
+The following options can be passed in
+
+### `commonInclude`
+
+A RegExp indicating the types of files to include under the `common-chunks` module
+
+### `directories`
+
+An array of strings representing directories to be checked for namespaced selectors. These should be absolute paths to ensure the proper directories are checked
+
+### `filterExclude`
+
+An array of RegExps to blacklist file types to be analyzed for namespaced selectors within the `directories` specified and `filterInclude` below
+
+### `filterInclude`
+
+An array of RegExps to whitelist file types to be analyzed for namespaced selectors within the `directories` specified
+
+### `getFeatureName`
+
+A function to map the argument string path to the name of the feature the path is associated to. Assists with the dependency traversal to determine which files
+should be bucketize under the same feature
+
+### `scssPath`
+
+A string representing the stylesheet path to analyze
+
+### `sqkdExclude`
+
+A RegExp to blacklist file types that are detected to have namespaced selectors. Typically, these target server-side files that are disconnected from the webpack
+server such as `.erb` or `.rb`
+
+### `statsPath`
+
+A string representing the path to the webpack JSON file or Object representing the contents of said file
+
+### `templateLeafInclude`
+
+A RegExp indicating the types of files that lack dependencies. Typically, these are view template files (such as `.eco` or `.hbs`)
+
 # Development
 
 `yarn test` will run the specs, `yarn lint` will run `eslint` with the `airbnb` configuration
