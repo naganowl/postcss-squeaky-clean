@@ -10,6 +10,7 @@ const postcss = require('postcss');
 const syntax = require('postcss-scss');
 const squeakyCleanPlugin = require('postcss-squeaky-clean/plugins/clean');
 const squeakyAnalyticsPlugin = require('postcss-squeaky-clean/plugins/analytics');
+const squeakyHeuristicPlugin = require('postcss-squeaky-clean/plugins/heuristic');
 const squeakySpecificityPlugin = require('postcss-squeaky-clean/plugins/specificity');
 
 // Custom require files or inlined arrays for analysis
@@ -17,7 +18,9 @@ const directories = require('./helpers/directories');
 const blacklistedClasses = require('./helpers/blacklisted-classes');
 const scssSheets = require('./helpers/scss-sheets');
 
-// Data structures for the `analysis` plugin
+const statsPath = require('../../tmp/stats.json');
+
+// Data structure for the `analysis` plugin
 const statsMap = {};
 
 // Data structures for the `specificity` plugin
@@ -58,6 +61,7 @@ function logSpecificity() {
 function writeStyles(scssPath, opts = {}) {
   const {
     useAnalytics,
+    useHeuristic,
     useSpecificity,
   } = opts;
   let writeFile = true;
@@ -66,6 +70,8 @@ function writeStyles(scssPath, opts = {}) {
     let plugin;
     if (useAnalytics) {
       plugin = squeakyAnalyticsPlugin;
+    } else if (useHeuristic) {
+      plugin = squeakyHeuristicPlugin;
     } else if (useSpecificity) {
       plugin = squeakySpecificityPlugin;
     } else {
@@ -95,6 +101,26 @@ function writeStyles(scssPath, opts = {}) {
       specificDir: [
         'styleguide/modules/tables/header-cell',
       ],
+      commonInclude: /app\/.+$/,
+      filterExclude: [/\.scss/, /\.erb/],
+      filterInclude: [/app\/.+backbone\//],
+      getFeatureName: function (filePath) {
+        let pathMatch;
+
+        if (/\.s?css$/.test(filePath)) {
+          pathMatch = filePath.match(/stylesheets\/internal\/(?:features|pages)\/([\w-]+)/) ||
+            filePath.match(/stylesheets\/internal\/([\w-]+)/) || [];
+        } else {
+          // JS/Coffee file
+          pathMatch = filePath.match(/javascripts\/(?:entries|external)\/([\w-]+)/) ||
+            filePath.match(/backbone\/features\/([\w-]+)/) || [];
+        }
+
+        return pathMatch[1];
+      },
+      sqkdExclude: /\.erb/,
+      templateLeafInclude: /\.eco$/,
+      statsPath,
       statsMap,
       ...blacklistedClasses,
     })])
@@ -125,11 +151,13 @@ function getPaths(filePath) {
 (function main() {
   let withDir;
   let useAnalytics = false;
+  let useHeuristic = false;
   let useSpecificity = false;
   const args = process.argv.slice(2);
 
   args.forEach((val) => {
     if (isSwitch(val)) {
+      useHeuristic = /heuristic/.test(val);
       // Guard against regex test once an analytics flag has been detected (to support `xargs` use)
       if (/analy(tics|ze)$/.test(val)) {
         useAnalytics = true;
@@ -158,7 +186,7 @@ function getPaths(filePath) {
 
     stylesheets.forEach((file) => {
       const absFile = path.join(__dirname, '..', '..', file);
-      styleMethod(absFile, { useAnalytics, useSpecificity });
+      styleMethod(absFile, { useAnalytics, useSpecificity, useHeuristic });
     });
   } else {
     throw new Error('Please provide a path to a directory or stylesheet to be squeaky cleaned!');
