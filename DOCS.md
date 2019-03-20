@@ -89,6 +89,11 @@ A string representing the path to the webpack JSON file or Object representing t
 
 A RegExp indicating the types of files that lack dependencies. Typically, these are view template files (such as `.eco` or `.hbs`)
 
+### `whitelistExclude`
+
+A pattern string fed into the invert match (`grep -v`) run on the set of whitelist files for a given namespace selector. Used to exclude "blessed" files
+in a codebase, such as styleguide components
+
 # Usage
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with

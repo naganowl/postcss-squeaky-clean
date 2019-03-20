@@ -120,6 +120,7 @@ function writeStyles(scssPath, opts = {}) {
       },
       sqkdExclude: /\.erb/,
       templateLeafInclude: /\.eco$/,
+      whitelistExclude: '/styleguide',
       statsPath,
       statsMap,
       ...blacklistedClasses,

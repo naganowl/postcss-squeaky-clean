@@ -334,6 +334,16 @@ describe('Squeaky heuristic plugin', () => {
     });
   });
 
+  it('passes the stylesheet directory to the replace script', function () {
+    const runOpts = Object.assign({}, pluginOpts, {
+      whitelistExclude: '/stylesheets',
+    });
+    return run(basicNestedStyles, () => {
+      const ssOpt = this.shellCalls.slice(-1)[0][1][3];
+      expect(ssOpt).toEqual('/stylesheets');
+    }, runOpts);
+  });
+
   describe('with view files containing namespaced selectors', () => {
     beforeAll(function () {
       this.findSelFiles = ['body.js', 'footer.js'].join('\n');

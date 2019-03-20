@@ -261,13 +261,25 @@ function parseRuleSelectors(theRule, collectedSelArr) {
 
 module.exports = postcss.plugin('squeakyHeuristicPlugin', (opts = {}) => {
   const {
-    directories, scssPath, statsPath, filterInclude, filterExclude, commonInclude, sqkdExclude,
+    commonInclude,
+    directories,
+    filterExclude,
+    filterInclude,
+    scssPath,
+    sqkdExclude,
+    statsPath,
+    whitelistExclude,
   } = opts;
   ({ getFeatureName } = opts);
   styleFeature = getFeatureName(scssPath);
   findSelectorFiles.init({ directories });
   getWhitelistFiles.init({
-    directories, statsPath, filterInclude, filterExclude, commonInclude, sqkdExclude,
+    commonInclude,
+    directories,
+    filterExclude,
+    filterInclude,
+    sqkdExclude,
+    statsPath,
   });
   squeakyFiles.init({ directories });
 
@@ -304,7 +316,7 @@ module.exports = postcss.plugin('squeakyHeuristicPlugin', (opts = {}) => {
       Object.keys(selFileMap).forEach((sel) => {
         console.log(`Removing ${sel}`);
         const scriptPath = path.resolve(path.join(__dirname, '..', 'scripts', 'replace_selectors.sh'));
-        console.log(runShell('sh', [scriptPath, sel, selFileMap[sel]]));
+        console.log(runShell('sh', [scriptPath, sel, selFileMap[sel], whitelistExclude]));
       });
       console.log('**********************Ancestor selectors queued up**********************');
       console.log(ancestorSels);

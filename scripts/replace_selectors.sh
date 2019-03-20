@@ -9,7 +9,7 @@ SANITIZED_SELECTORS=`echo "$SQKD_SELECTORS" | tr ' ' '\n' | grep sqkd | sort -u 
 
 if [[ `echo $WHITELIST_FILES` ]]
 then
-  SANITIZED_FILES=`echo "$WHITELIST_FILES" | grep -v "/stylesheets/"`
+  SANITIZED_FILES=`echo "$WHITELIST_FILES" | grep -v "$3"`
 else
   SANITIZED_SELECTORS=`echo $1 | tr ',' '\n'`
 fi
