@@ -105,12 +105,25 @@ Selector specificity can be observed with
 
 To check for any dangling namespaced selectors, the following command can be run
 
-`squeaky-lint --directoriesPath <FILE_PATH> --pathRoot <FILE_PATH> --composeDir`
+`squeaky-lint --directoriesPath <FILE_PATH> --pathRoot <FILE_PATH> --composeDir <DIR_PATH> --ext <EXT_STR>`
 
-where `directoriesPath` points to a module which returns an array of strings denoting file directories to lint
-and `pathRoot` is a file path that's the top level directory of the code to be analyzed
-with `composeDir` being a comma delineated string of the directories that have stylesheets implementing CSS composition
-then `ext` can be used with a comma delineated string to specify the extensions for view files to scan for squeaky selectors
+Here are further descriptions for the configuration flags
+
+### `directoriesPath`
+
+A string file path that points to a module which returns an array of strings denoting file directories to lint
+
+### `pathRoot`
+
+A string file path that's the top level directory of the code to be analyzed
+
+### `composeDir`
+
+A string that's comma delineated of directories that have stylesheets implementing CSS composition
+
+### `ext`
+
+A string that's comma delineated to specify the extensions for view files to scan for squeaky selectors
 
 # Statistics
 
