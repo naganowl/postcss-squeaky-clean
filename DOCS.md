@@ -89,6 +89,10 @@ An [example script](./examples/scss-parser.js) demonstrates how the plugins can 
 
 `node scripts/node/scss-parser.js path/to/stylesheet.scss --clean`
 
+The `heuristic` plugin can be run with
+
+`node scripts/node/scss-parser.js path/to/stylesheet.scss --heuristic`
+
 The `analytics` plugin can be run with
 
 `node scripts/node/scss-parser.js path/to/stylesheet.scss --analyze`
