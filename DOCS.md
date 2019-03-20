@@ -87,19 +87,19 @@ A RegExp indicating the types of files that lack dependencies. Typically, these 
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
 
-`node scripts/node/scss-parser.js path/to/stylesheet.scss --clean`
+`node examples/scss-parser.js path/to/stylesheet.scss --clean`
 
 The `heuristic` plugin can be run with
 
-`node scripts/node/scss-parser.js path/to/stylesheet.scss --heuristic`
+`node examples/scss-parser.js path/to/stylesheet.scss --heuristic`
 
 The `analytics` plugin can be run with
 
-`node scripts/node/scss-parser.js path/to/stylesheet.scss --analyze`
+`node examples/scss-parser.js path/to/stylesheet.scss --analyze`
 
 Selector specificity can be observed with
 
-`node scripts/node/scss-parser.js path/to/stylesheet.scss --specify`
+`node examples/scss-parser.js path/to/stylesheet.scss --specify`
 
 # Linting
 
