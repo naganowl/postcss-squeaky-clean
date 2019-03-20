@@ -118,7 +118,7 @@ A RegExp indicating the types of files to include under the `common-chunks` modu
 
 ### `directories`
 
-An array of strings representing directories to be checked for namespaced selectors. These should be absolute paths to ensure the proper directories are checked
+An array of strings representing file paths which contain the top level directories which the plugin will recursive analyze for class selectors
 
 ### `filterExclude`
 
