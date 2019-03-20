@@ -29,6 +29,60 @@ For one off selectors that would be skipped, adding a comment next to the select
 An array of strings that represent regular expressions to target specific internal/helper method invocations within a codebase that can be targeted by
 the plugin. See 0c645c5 for an example.
 
+## `heuristic` plugin
+
+With namespaced selectors across all files, there's a 1:1 correlation where a selector in a given view/template file has a selector in a stylesheet that
+defines it's styles. Since each namespaced selector has a unique key globally, the selector can directly target those elements which can happen if nesting
+is removed from the stylesheet. The major obstacle preventing such a simple solution is that with a sufficiently sized codebase, there will be many stylesheets
+which define nested selectors where a given DOM element can be targetted by multiple of such selectors. The flattening of a stylesheet will normalize the specificity
+of all selectors at the cost of losing which styles should have precedence over others.
+
+To alleviate this issue, a heuristic is applied in an attempt to remove namespaced selectors from all files, except for those that it's used in. This is accomplished
+by starting with all files that contain a given selector and walking the dependency chain (provided by webpack, assuming that the codebase has been sufficiently
+modularized with CommonJS modules) to determine the file hierarchy which actually utilize the styles. There can be some false positives generated from this process
+and shared components that could be chunked/split via other webpack plugins. For the most part, this helps wipe out a majority of the extra namespaced selectors
+that are scattered from the `clean` plugin (especially the generically named shared styles).
+
+The following options can be passed in
+
+### `commonInclude`
+
+A RegExp indicating the types of files to include under the `common-chunks` module
+
+### `directories`
+
+An array of strings representing file paths which contain the top level directories which the plugin will recursive analyze for class selectors
+
+### `filterExclude`
+
+An array of RegExps to blacklist file types to be analyzed for namespaced selectors within the `directories` specified and `filterInclude` below
+
+### `filterInclude`
+
+An array of RegExps to whitelist file types to be analyzed for namespaced selectors within the `directories` specified
+
+### `getFeatureName`
+
+A function to map the argument string path to the name of the feature the path is associated to. Assists with the dependency traversal to determine which files
+should be bucketize under the same feature
+
+### `scssPath`
+
+A string representing the stylesheet path to analyze
+
+### `sqkdExclude`
+
+A RegExp to blacklist file types that are detected to have namespaced selectors. Typically, these target server-side files that are disconnected from the webpack
+server such as `.erb` or `.rb`
+
+### `statsPath`
+
+A string representing the path to the webpack JSON file or Object representing the contents of said file
+
+### `templateLeafInclude`
+
+A RegExp indicating the types of files that lack dependencies. Typically, these are view template files (such as `.eco` or `.hbs`)
+
 # Usage
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
@@ -95,60 +149,6 @@ An array of directory strings which should be given less precedence (lose specif
 ### `specificDir`
 
 An array of directory strings which should be given more precedence (win specificity ties). Usually exceptional cases
-
-## `heuristic` plugin
-
-With namespaced selectors across all files, there's a 1:1 correlation where a selector in a given view/template file has a selector in a stylesheet that
-defines it's styles. Since each namespaced selector has a unique key globally, the selector can directly target those elements which can happen if nesting
-is removed from the stylesheet. The major obstacle preventing such a simple solution is that with a sufficiently sized codebase, there will be many stylesheets
-which define nested selectors where a given DOM element can be targetted by multiple of such selectors. The flattening of a stylesheet will normalize the specificity
-of all selectors at the cost of losing which styles should have precedence over others.
-
-To alleviate this issue, a heuristic is applied in an attempt to remove namespaced selectors from all files, except for those that it's used in. This is accomplished
-by starting with all files that contain a given selector and walking the dependency chain (provided by webpack, assuming that the codebase has been sufficiently
-modularized with CommonJS modules) to determine the file hierarchy which actually utilize the styles. There can be some false positives generated from this process
-and shared components that could be chunked/split via other webpack plugins. For the most part, this helps wipe out a majority of the extra namespaced selectors
-that are scattered from the `clean` plugin (especially the generically named shared styles).
-
-The following options can be passed in
-
-### `commonInclude`
-
-A RegExp indicating the types of files to include under the `common-chunks` module
-
-### `directories`
-
-An array of strings representing file paths which contain the top level directories which the plugin will recursive analyze for class selectors
-
-### `filterExclude`
-
-An array of RegExps to blacklist file types to be analyzed for namespaced selectors within the `directories` specified and `filterInclude` below
-
-### `filterInclude`
-
-An array of RegExps to whitelist file types to be analyzed for namespaced selectors within the `directories` specified
-
-### `getFeatureName`
-
-A function to map the argument string path to the name of the feature the path is associated to. Assists with the dependency traversal to determine which files
-should be bucketize under the same feature
-
-### `scssPath`
-
-A string representing the stylesheet path to analyze
-
-### `sqkdExclude`
-
-A RegExp to blacklist file types that are detected to have namespaced selectors. Typically, these target server-side files that are disconnected from the webpack
-server such as `.erb` or `.rb`
-
-### `statsPath`
-
-A string representing the path to the webpack JSON file or Object representing the contents of said file
-
-### `templateLeafInclude`
-
-A RegExp indicating the types of files that lack dependencies. Typically, these are view template files (such as `.eco` or `.hbs`)
 
 # Development
 
