@@ -27,7 +27,7 @@ For one off selectors that would be skipped, adding a comment next to the select
 ### `regExps`
 
 An array of strings that represent regular expressions to target specific internal/helper method invocations within a codebase that can be targeted by
-the plugin. See 0c645c5 for an example.
+the plugin. See [some specs](https://github.com/naganowl/postcss-squeaky-clean/commit/0c645c5) for an example.
 
 ## `heuristic` plugin
 
