@@ -22,7 +22,13 @@ A comma, delineated string representing file extensions that will be examined fo
 An object with two keys (`BLACKLIST_CLASSES` and `BLACKLIST_PREFIXES`) whose values are both an array of strings which are class selectors (including the period!).
 These selectors will be ignored (skipped from namespacing) in stylesheets. The selectors in `BLACKLIST_PREFIXES` will ignore class selectors that begin with those strings.
 
-For one off selectors that would be skipped, adding a comment next to the selector in the stylesheets (e.g. `// squeaky-skip`) will allow the plugin to ignore namespacing the selector.
+For one off selectors that would be skipped, adding a comment next to the selector in the stylesheets will allow the plugin to ignore namespacing the selector like so
+
+```
+.test { // squeaky-skip
+  color: fuchsia;
+}
+```
 
 ### `regExps`
 
