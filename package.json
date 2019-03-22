@@ -41,9 +41,13 @@
     "jasmine": "^3.3.1",
     "lodash.clonedeep": "^4.5.0",
     "mock-fs": "^4.8.0",
-    "mock-spawn": "^0.2.6"
+    "mock-spawn": "^0.2.6",
+    "postcss-nested": "1.0.1",
+    "postcss-scss": "^0.4.1"
   },
   "peerDependencies": {
+    "postcss-nested": "1.0.1",
+    "postcss-scss": "^0.4.1",
     "webpack": "^2 || ^3"
   }
 }
