@@ -103,12 +103,13 @@ describe('Squeaky clean plugin', () => {
 
   it('skips exceptions', function () {
     const safeStyles = `
-      button { // squeaky-skip
+      .row { /* squeaky-skip */
         color: fuchsia
       }
     `;
     return run(safeStyles, (result) => {
-      expect(result.css).toEqual(safeStyles);
+      expect(result.css).toContain('row');
+      expect(result.css).not.toContain('-sqkd-');
       expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
     });
   });

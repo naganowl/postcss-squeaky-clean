@@ -25,7 +25,7 @@ These selectors will be ignored (skipped from namespacing) in stylesheets. The s
 For one off selectors that would be skipped, adding a comment next to the selector in the stylesheets will allow the plugin to ignore namespacing the selector like so
 
 ```
-.test { // squeaky-skip
+.test { /* squeaky-skip */
   color: fuchsia;
 }
 ```
