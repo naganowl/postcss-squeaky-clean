@@ -1,5 +1,6 @@
 const { calculate } = require('specificity');
 const postcss = require('postcss');
+const compact = require('lodash.compact');
 const uniq = require('lodash.uniq');
 const getFullSelectors = require('../helpers/get-full-selectors');
 
@@ -86,7 +87,7 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
       }));
 
       rule.selectors.reduce((memo, sel) => {
-        const selArr = sel.split(' ');
+        const selArr = compact(sel.replace(/[~+]/, '').split(' '));
         selArr.forEach((elSel) => {
           if (elSel.includes('-sqkd-')) {
             // Remove tag selectors that could be attached to squeaky selector.
