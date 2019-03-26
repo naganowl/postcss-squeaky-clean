@@ -158,6 +158,78 @@ describe('Squeaky flatten plugin', () => {
     });
   });
 
+  describe('with comma separated namespaced selectors', () => {
+    beforeEach(function() {
+      this.commaStyles = `
+        .foo-sqkd-deadbeef, .baz-sqkd-beeffade {
+          color: fuchsia;
+
+          .bar-sqkd-fadedbabe {
+            padding: 1px;
+          }
+        }
+      `;
+    });
+
+    it('handles comma separated namespaced selectors', function() {
+      return run(this.commaStyles, (result) => {
+        const flatStyles = `
+            .foo-sqkd-deadbeef, .baz-sqkd-beeffade {
+              /* Specificity: 0,0,1,0 (2)  */
+              color: fuchsia !important;
+            }
+            .bar-sqkd-fadedbabe {
+              /* Specificity: 0,0,2,0 (2)  */
+              padding: 1px !important;
+            }
+          `;
+        checkStyles(result.css, flatStyles);
+      });
+    });
+
+    it('accounts for them in specificity comments', function() {
+      return run(this.commaStyles, (result) => {
+        expect(result.css).toContain('Specificity: 0,0,1,0 (2)');
+      })
+    });
+  });
+
+  describe('with comma separated differing specificity namespaced selectors', () => {
+    beforeEach(function() {
+      this.commaStyles = `
+        .foo-sqkd-deadbeef {
+          color: fuchsia;
+
+          btn.baz-sqkd-beeffade, .bar-sqkd-fadedbabe {
+            padding: 1px;
+          }
+        }
+      `;
+    });
+
+    it('handles comma separated namespaced selectors', function() {
+      return run(this.commaStyles, (result) => {
+        const flatStyles = `
+            .foo-sqkd-deadbeef {
+              /* Specificity: 0,0,1,0 (1)  */
+              color: fuchsia !important;
+            }
+            .baz-sqkd-beeffade, .bar-sqkd-fadedbabe {
+              /* Specificity: 0,0,2,1; 0,0,2,0  */
+              padding: 1px !important;
+            }
+          `;
+        checkStyles(result.css, flatStyles);
+      });
+    });
+
+    it('accounts for both specificities', function() {
+      return run(this.commaStyles, (result) => {
+        expect(result.css).toContain('Specificity: 0,0,2,1; 0,0,2,0');
+      })
+    });
+  });
+
   describe('with sibling namespaced selectors', () => {
     beforeEach(function() {
       this.commaStyles = `
