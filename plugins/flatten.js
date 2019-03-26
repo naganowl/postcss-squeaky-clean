@@ -49,11 +49,15 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
         if (selector.includes('%')) {
           return selector;
         }
-
-        if (lastSelector.indexOf('.') === 0 && lastSelector.includes('-sqkd-') && !/~+/.test(selector)) {
+        const sqkdSelectors = lastSelector.match(/\.[\w-]+/g);
+        if (sqkdSelectors && lastSelector.includes('-sqkd-') && !/~+/.test(selector)) {
           // Allow these styles to be most important
           makePropsImportant(rule);
-          return lastSelector;
+          if (sqkdSelectors.length > 1) {
+            return lastSelector;
+          } else {
+            return sqkdSelectors[0];
+          }
         }
         // Return closest ancestor squeaky selector if leaf/base selector misses squeaky modifiers
         if (selector.includes('-sqkd-')) {

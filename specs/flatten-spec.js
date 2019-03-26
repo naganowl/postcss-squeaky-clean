@@ -77,4 +77,55 @@ describe('Squeaky flatten plugin', () => {
       expect(flattenedSqkdSels).toContain('.bar-sqkd-fadedbabe');
     });
   });
+
+  describe('with sibling namespaced selectors', () => {
+    beforeEach(function() {
+      this.commaStyles = `
+        .foo-sqkd-deadbeef {
+          color: fuchsia;
+
+          .baz-sqkd-beeffade ~ .bar-sqkd-fadedbabe {
+            padding: 1px;
+          }
+        }
+      `;
+    });
+
+    it('handles flattening the styles', function() {
+      return run(this.commaStyles, (result) => {
+        const flatStyles = `
+          .foo-sqkd-deadbeef {
+            /* Specificity: 0,0,1,0 (1)  */
+            color: fuchsia !important;
+          }
+          .baz-sqkd-beeffade ~ .bar-sqkd-fadedbabe {
+            /* Specificity: 0,0,3,0 (1)  */
+            padding: 1px;
+          }
+        `;
+        checkStyles(result.css, flatStyles);
+      });
+    });
+
+    it('logs the squeaky selectors it makes top level', function() {
+      spyOn(console, 'log').and.callThrough();
+      return run(this.commaStyles, () => {
+        /* eslint-disable arrow-body-style, no-console */
+        const flattenedSqkdSels = console.log.calls.allArgs().filter((logged) => {
+          return logged.filter((entries) => {
+            return typeof entries === 'object';
+          });
+        })[0][2];
+        expect(flattenedSqkdSels).toContain('.foo-sqkd-deadbeef');
+        expect(flattenedSqkdSels).toContain('.bar-sqkd-fadedbabe');
+        expect(flattenedSqkdSels).toContain('.baz-sqkd-beeffade');
+      });
+    });
+
+    it('keeps the sibling values un-important', function() {
+      return run(this.commaStyles, (result) => {
+        expect(result.css).toContain('padding: 1px;');
+      })
+    });
+  });
 });
