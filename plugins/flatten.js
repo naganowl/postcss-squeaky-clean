@@ -48,7 +48,7 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
 
         // Handle placeholder selectors
         if (selector.includes('%')) {
-          return selector;
+          return selector.match(/%[\w-]+/)[0] || selector;
         }
         const sqkdSelectors = lastSelector.match(/\.[\w-]+/g);
         if (sqkdSelectors && lastSelector.includes('-sqkd-') && !/~+/.test(selector)) {
@@ -96,7 +96,7 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
         selArr.forEach((elSel) => {
           if (elSel.includes('-sqkd-')) {
             // Remove tag selectors that could be attached to squeaky selector.
-            const sqkdSelectors = elSel.match(/\.[\w-]+/);
+            const sqkdSelectors = elSel.match(/\.[\w-]+/) || [];
             // Account for multiple squeaky selectors attached.
             sqkdSelectors.forEach((sqkd) => {
               memo.push(sqkd);
