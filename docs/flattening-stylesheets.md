@@ -1,4 +1,4 @@
-# Squeaky flatten plugin
+# How stylesheets are flattened
 
 Per *phase 2* of squeaky clean room, to obtain consistency between legacy + modern code, styles should be "flat" (single level, without nesting) to match the CSS modules pattern that new world code adopts.
 
