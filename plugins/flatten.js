@@ -18,9 +18,6 @@ function makePropsImportant(cssRule) {
   with non-class selectors and adjacency combinators (e.g. `+` and `~`) it groups
   squeaky selectors together or finds the closest ancestor squeaky selector and
   trims the declaration to that.
-
-  For instance, `.foo-sqkd-dead + .bar-sqkd-beef` would stay unchanged, however
-  `h1 .baz-sqkd-1337 div a` would be trimmed to `.baz-sqkd-1337 div a`
 */
 module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
   const flattenedSqkdSels = [];
