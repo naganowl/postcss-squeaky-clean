@@ -108,6 +108,33 @@ describe('Squeaky flatten plugin', () => {
       checkStyles(result.css, flatStyles);
     });
   });
+
+  it('handles multiple namespaced selectors', () => {
+    const nestedStyles = `
+      .foo-sqkd-deadbeef {
+        color: fuchsia;
+
+        .baz-sqkd-beeffade.bar-sqkd-fadedbabe {
+          padding: 1px;
+        }
+      }
+    `;
+
+    return run(nestedStyles, (result) => {
+      const flatStyles = `
+          .foo-sqkd-deadbeef {
+            /* Specificity: 0,0,1,0 (1)  */
+            color: fuchsia !important;
+          }
+          .baz-sqkd-beeffade.bar-sqkd-fadedbabe {
+            /* Specificity: 0,0,3,0 (1)  */
+            padding: 1px !important;
+          }
+        `;
+      checkStyles(result.css, flatStyles);
+    });
+  });
+
   it('adds specificity comments', () => run(basicNestedStyles, (result) => {
     expect(result.css).toContain('Specificity: 0,0,1,0 (1)');
   }));
