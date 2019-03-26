@@ -94,6 +94,14 @@ A RegExp indicating the types of files that lack dependencies. Typically, these 
 A pattern string fed into the invert match (`grep -v`) run on the set of whitelist files for a given namespace selector. Used to exclude "blessed" files
 in a codebase, such as styleguide components
 
+## `flatten` plugin
+After running the `heuristic` plugin, each namespaced selector in a stylesheet should have a 1:1 correspondence with the view template files in which they
+are used in. This unique relationship means that the selectors in the stylesheet can be pulled out top level so that the specificity they have is just of
+the class.
+
+A caveat is that the a given DOM element may have multiple namespaced selectors which conflict since they all have the same single class specificity.
+These can be highlighted and resolved with the `specificity` plugin
+
 # Usage
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
@@ -103,6 +111,10 @@ An [example script](./examples/scss-parser.js) demonstrates how the plugins can 
 The `heuristic` plugin can be run with
 
 `node examples/scss-parser.js path/to/stylesheet.scss --heuristic`
+
+The `flatten` plugin can be run with (requires the `heuristic` plugin to be run first)
+
+`node examples/scss-parser.js path/to/stylesheet.scss --flatten`
 
 The `analytics` plugin can be run with
 
