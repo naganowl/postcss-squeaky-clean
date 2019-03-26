@@ -55,6 +55,34 @@ describe('Squeaky flatten plugin', () => {
     checkStyles(result.css, flatStyles);
   }));
 
+  it('ignores selectors without any style properties', () => {
+    const nestedStyles = `
+      .foo-sqkd-deadbeef {
+        color: fuchsia;
+
+        a.baz-sqkd-beeffade {
+          .bar-sqkd-fadedbabe {
+            padding: 1px;
+          }
+        }
+      }
+    `;
+
+    return run(nestedStyles, (result) => {
+      const flatStyles = `
+          .foo-sqkd-deadbeef {
+            /* Specificity: 0,0,1,0 (1)  */
+            color: fuchsia !important;
+          }
+          .bar-sqkd-fadedbabe {
+            /* Specificity: 0,0,3,1 (1)  */
+            padding: 1px !important;
+          }
+        `;
+      checkStyles(result.css, flatStyles);
+    });
+  });
+
   it('trims ancestor tag selectors of squeaky selectors', () => {
     const nestedStyles = `
       h1 {
