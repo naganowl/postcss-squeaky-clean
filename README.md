@@ -54,7 +54,7 @@ for better performance than the context switch from spawning an external node pr
 
 ## How can I use this?!
 
-See the [docs](./DOCS.md) or [example script](./examples/scss-parser.js)!
+See the [docs](./API.md) or [example script](./examples/scss-parser.js)!
 
 ## What's up with the name?
 
