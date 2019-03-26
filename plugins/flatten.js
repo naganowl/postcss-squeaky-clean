@@ -59,14 +59,17 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
           }
           return sqkdSelectors[0];
         }
+
         let theSelector = selector;
         // Return closest ancestor squeaky selector if leaf/base selector misses squeaky modifiers
         if (selector.includes('-sqkd-')) {
+          // Check if root selector is a tag
           let tagSelRoot = false;
           const endSelector = lastSelectorArr.pop();
           const flatSelArr = lastSelectorArr.reduceRight((memo, val, idx, theArr) => {
             if (val.includes('-sqkd-')) {
-              if (lastSelectorArr[0] && !lastSelectorArr[0].includes('-sqkd-')) {
+              const [nextAncestorSelector] = lastSelectorArr;
+              if (nextAncestorSelector && !nextAncestorSelector.includes('-sqkd-')) {
                 tagSelRoot = true;
                 // Remove tag selectors
                 const [sqSel] = val.match(/\.[\w-]+/);
@@ -87,6 +90,7 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
         return theSelector;
       }));
 
+      // Log selectors that have been flattened top level
       rule.selectors.reduce((memo, sel) => {
         const selArr = compact(sel.replace(/[~+]/, '').split(' '));
         selArr.forEach((elSel) => {
