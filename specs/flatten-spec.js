@@ -187,7 +187,7 @@ describe('Squeaky flatten plugin', () => {
   });
 
   describe('with comma separated namespaced selectors', () => {
-    beforeEach(function() {
+    beforeEach(function () {
       this.commaStyles = `
         .foo-sqkd-deadbeef, .baz-sqkd-beeffade {
           color: fuchsia;
@@ -199,7 +199,7 @@ describe('Squeaky flatten plugin', () => {
       `;
     });
 
-    it('handles comma separated namespaced selectors', function() {
+    it('handles comma separated namespaced selectors', function () {
       return run(this.commaStyles, (result) => {
         const flatStyles = `
             .foo-sqkd-deadbeef, .baz-sqkd-beeffade {
@@ -215,15 +215,15 @@ describe('Squeaky flatten plugin', () => {
       });
     });
 
-    it('accounts for them in specificity comments', function() {
+    it('accounts for them in specificity comments', function () {
       return run(this.commaStyles, (result) => {
         expect(result.css).toContain('Specificity: 0,0,1,0 (2)');
-      })
+      });
     });
   });
 
   describe('with comma separated differing specificity namespaced selectors', () => {
-    beforeEach(function() {
+    beforeEach(function () {
       this.commaStyles = `
         .foo-sqkd-deadbeef {
           color: fuchsia;
@@ -235,7 +235,7 @@ describe('Squeaky flatten plugin', () => {
       `;
     });
 
-    it('handles comma separated namespaced selectors', function() {
+    it('handles comma separated namespaced selectors', function () {
       return run(this.commaStyles, (result) => {
         const flatStyles = `
             .foo-sqkd-deadbeef {
@@ -251,15 +251,15 @@ describe('Squeaky flatten plugin', () => {
       });
     });
 
-    it('accounts for both specificities', function() {
+    it('accounts for both specificities', function () {
       return run(this.commaStyles, (result) => {
         expect(result.css).toContain('Specificity: 0,0,2,1; 0,0,2,0');
-      })
+      });
     });
   });
 
   describe('with sibling namespaced selectors', () => {
-    beforeEach(function() {
+    beforeEach(function () {
       this.commaStyles = `
         .foo-sqkd-deadbeef {
           color: fuchsia;
@@ -271,7 +271,7 @@ describe('Squeaky flatten plugin', () => {
       `;
     });
 
-    it('handles flattening the styles', function() {
+    it('handles flattening the styles', function () {
       return run(this.commaStyles, (result) => {
         const flatStyles = `
           .foo-sqkd-deadbeef {
@@ -287,7 +287,7 @@ describe('Squeaky flatten plugin', () => {
       });
     });
 
-    it('logs the squeaky selectors it makes top level', function() {
+    it('logs the squeaky selectors it makes top level', function () {
       spyOn(console, 'log').and.callThrough();
       return run(this.commaStyles, () => {
         /* eslint-disable arrow-body-style, no-console */
@@ -302,10 +302,10 @@ describe('Squeaky flatten plugin', () => {
       });
     });
 
-    it('keeps the sibling values un-important', function() {
+    it('keeps the sibling values un-important', function () {
       return run(this.commaStyles, (result) => {
         expect(result.css).toContain('padding: 1px;');
-      })
+      });
     });
   });
 });

@@ -56,9 +56,8 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
           makePropsImportant(rule);
           if (sqkdSelectors.length > 1) {
             return lastSelector;
-          } else {
-            return sqkdSelectors[0];
           }
+          return sqkdSelectors[0];
         }
         let theSelector = selector;
         // Return closest ancestor squeaky selector if leaf/base selector misses squeaky modifiers
@@ -70,7 +69,8 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
               if (lastSelectorArr[0] && !lastSelectorArr[0].includes('-sqkd-')) {
                 tagSelRoot = true;
                 // Remove tag selectors
-                memo[idx] = val.match(/\.[\w-]+/)[0];
+                const [sqSel] = val.match(/\.[\w-]+/);
+                memo[idx] = sqSel; // eslint-disable-line no-param-reassign
               }
               // Break early from the loop.
               theArr.splice(0);
@@ -81,6 +81,7 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
           if (tagSelRoot) {
             // Memo insertion spliced tagless selector into array, so remove the original
             flatSelArr.pop();
+          }
           theSelector = flatSelArr.reverse().join(' ');
         }
         return theSelector;
