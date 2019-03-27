@@ -102,6 +102,12 @@ the class.
 A caveat is that the a given DOM element may have multiple namespaced selectors which conflict since they all have the same single class specificity.
 These can be highlighted and resolved with the `specificity` plugin
 
+In case there are extra new lines inserted between the first style brace and property values, the following shell command can be run to clean up the styles
+
+`cat <PATH> | awk '/{/ { printf("%s", $0); next } 1' | tee <PATH>`
+
+Using `stylint` can also clean up any additional awkward spacing that's leftover
+
 # Usage
 
 An [example script](./examples/scss-parser.js) demonstrates how the plugins can be hooked up with PostCSS. If placed in the directory `scripts/node`, the `clean` plugin can be executed with
