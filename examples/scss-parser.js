@@ -7,6 +7,7 @@ const glob = require('glob');
 
 // PostCSS dependencies/plugins
 const postcss = require('postcss');
+const nested = require('postcss-nested');
 const syntax = require('postcss-scss');
 const squeakyCleanPlugin = require('postcss-squeaky-clean/plugins/clean');
 const squeakyAnalyticsPlugin = require('postcss-squeaky-clean/plugins/analytics');
@@ -138,6 +139,18 @@ function writeStyles(scssPath, opts = {}) {
   });
 }
 
+function flattenStyles(scssPath) {
+  fs.readFile(scssPath, (err, scss) => {
+    console.log(`\n\n${scssPath}`);
+
+    postcss([nested, squeakyFlattenPlugin({ scssPath })])
+      .process(scss, { syntax })
+      .then((result) => {
+        fs.writeFileSync(scssPath, result.content, 'utf8');
+      });
+  });
+}
+
 function isSwitch(val) {
   return val.indexOf('--') === 0;
 }
@@ -151,6 +164,7 @@ function getPaths(filePath) {
 // Main script to handle plugins. These can be split out individually for each plugin.
 (function main() {
   let withDir;
+  let flattenFile = false;
   let useAnalytics = false;
   let useHeuristic = false;
   let useSpecificity = false;
@@ -158,6 +172,7 @@ function getPaths(filePath) {
 
   args.forEach((val) => {
     if (isSwitch(val)) {
+      flattenFile = /flatten/.test(val);
       useHeuristic = /heuristic/.test(val);
       // Guard against regex test once an analytics flag has been detected (to support `xargs` use)
       if (/analy(tics|ze)$/.test(val)) {
@@ -181,7 +196,7 @@ function getPaths(filePath) {
       }
       return accumulator;
     }, []);
-    const styleMethod = writeStyles;
+    const styleMethod = flattenFile ? flattenStyles : writeStyles;
     console.log('Processing the following stylesheets:');
     console.log(stylesheets);
 
