@@ -19,10 +19,10 @@ function makePropsImportant(cssRule) {
   squeaky selectors together or finds the closest ancestor squeaky selector and
   trims the declaration to that.
 */
-module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
-  const flattenedSqkdSels = [];
-
+module.exports = postcss.plugin('squeakyFlattenPlugin', () => { // eslint-disable-line arrow-body-style
   return function main(css) {
+    const flattenedSqkdSels = [];
+
     css.walkRules((rule) => {
       const specificityList = calculate(getFullSelectors(rule).join(',')).map(result => result.specificity);
       const sameSelectorSpecificity = specificityList.every(el => el === specificityList[0]);
@@ -47,6 +47,13 @@ module.exports = postcss.plugin('squeakyFlattenPlugin', () => {
         if (selector.includes('%')) {
           return selector.match(/%[\w-]+/)[0] || selector;
         }
+
+        //  Take care of pseudo-element selectors
+        const pseudoElementSel = (selector.match(/[.\w-]+(:\w+\(.+?\))+/) || []);
+        if (pseudoElementSel.length) {
+          return pseudoElementSel[0];
+        }
+
         const sqkdSelectors = lastSelector.match(/\.[\w-]+/g);
         if (sqkdSelectors && lastSelector.includes('-sqkd-') && !/~+/.test(selector)) {
           // Allow these styles to be most important

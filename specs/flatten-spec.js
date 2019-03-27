@@ -189,6 +189,32 @@ describe('Squeaky flatten plugin', () => {
     });
   });
 
+  it('handles namespaced pseudo-element states', () => {
+    const nestedStyles = `
+      .foo-sqkd-deadbeef {
+        color: fuchsia;
+
+        button:hover {
+          padding: 1px;
+        }
+      }
+    `;
+
+    return run(nestedStyles, (result) => {
+      const flatStyles = `
+          .foo-sqkd-deadbeef {
+            /* Specificity: 0,0,1,0 (1)  */
+            color: fuchsia !important;
+          }
+          .foo-sqkd-deadbeef button:hover {
+            /* Specificity: 0,0,2,1 (1)  */
+            padding: 1px;
+          }
+        `;
+      checkStyles(result.css, flatStyles);
+    });
+  });
+
   it('adds specificity comments', () => run(basicNestedStyles, (result) => {
     expect(result.css).toContain('Specificity: 0,0,1,0 (1)');
   }));
@@ -330,6 +356,58 @@ describe('Squeaky flatten plugin', () => {
 
     it('keeps the sibling values un-important', function () {
       return run(this.commaStyles, (result) => {
+        expect(result.css).toContain('padding: 1px;');
+      });
+    });
+  });
+
+  describe('with pseudo-element namespaced selectors', () => {
+    beforeEach(function () {
+      this.pseudoStyles = `
+        .foo-sqkd-deadbeef {
+          color: fuchsia;
+
+          .row-header:not(.baz-sqkd-beeffade):not(.bar-sqkd-fadedbabe) {
+            padding: 1px;
+          }
+        }
+      `;
+    });
+
+    it('handles flattening the styles', function () {
+      return run(this.pseudoStyles, (result) => {
+        const flatStyles = `
+          .foo-sqkd-deadbeef {
+            /* Specificity: 0,0,1,0 (1)  */
+            color: fuchsia !important;
+          }
+          .row-header:not(.baz-sqkd-beeffade):not(.bar-sqkd-fadedbabe) {
+            /* Specificity: 0,0,4,0 (1)  */
+            padding: 1px;
+          }
+        `;
+        checkStyles(result.css, flatStyles);
+      });
+    });
+
+    it('logs the squeaky selectors it makes top level', function () {
+      spyOn(console, 'log').and.callThrough();
+      return run(this.pseudoStyles, () => {
+        /* eslint-disable arrow-body-style, no-console */
+        const flattenedSqkdSels = console.log.calls.allArgs().filter((logged) => {
+          return logged.filter((entries) => {
+            return typeof entries === 'object';
+          });
+        })[0][2];
+        expect(flattenedSqkdSels).toContain('.foo-sqkd-deadbeef');
+        expect(flattenedSqkdSels).toContain('.row-header');
+        expect(flattenedSqkdSels).not.toContain('.bar-sqkd-fadedbabe');
+        expect(flattenedSqkdSels).not.toContain('.baz-sqkd-beeffade');
+      });
+    });
+
+    it('keeps the pseudo-element selector values un-important', function () {
+      return run(this.pseudoStyles, (result) => {
         expect(result.css).toContain('padding: 1px;');
       });
     });
