@@ -36,6 +36,21 @@ function checkStyles(returnedCss, expectedCss) {
   });
 }
 
+// Helper to detect the namespaced selectors logged as flattened
+function checkSelectorLog(theStyles, callback) {
+  spyOn(console, 'log').and.callThrough();
+  return run(theStyles, () => {
+    /* eslint-disable arrow-body-style, no-console */
+    const flatSqkdSelArr = console.log.calls.allArgs().filter((logged) => {
+      return logged.filter((entries) => {
+        return typeof entries === 'object';
+      });
+    })[0][2];
+
+    callback(flatSqkdSelArr);
+  });
+}
+
 describe('Squeaky flatten plugin', () => {
   it('flattens squeaky selectors', () => run(basicNestedStyles, (result) => {
     const flatStyles = `
@@ -225,14 +240,7 @@ describe('Squeaky flatten plugin', () => {
   }));
 
   it('logs the squeaky selectors it makes top level', () => {
-    spyOn(console, 'log').and.callThrough();
-    return run(basicNestedStyles, () => {
-      /* eslint-disable arrow-body-style, no-console */
-      const flattenedSqkdSels = console.log.calls.allArgs().filter((logged) => {
-        return logged.filter((entries) => {
-          return typeof entries === 'object';
-        });
-      })[0][2];
+    return checkSelectorLog(basicNestedStyles, (flattenedSqkdSels) => {
       expect(flattenedSqkdSels).toContain('.foo-sqkd-deadbeef');
       expect(flattenedSqkdSels).toContain('.bar-sqkd-fadedbabe');
     });
@@ -340,14 +348,7 @@ describe('Squeaky flatten plugin', () => {
     });
 
     it('logs the squeaky selectors it makes top level', function () {
-      spyOn(console, 'log').and.callThrough();
-      return run(this.commaStyles, () => {
-        /* eslint-disable arrow-body-style, no-console */
-        const flattenedSqkdSels = console.log.calls.allArgs().filter((logged) => {
-          return logged.filter((entries) => {
-            return typeof entries === 'object';
-          });
-        })[0][2];
+      return checkSelectorLog(this.commaStyles, (flattenedSqkdSels) => {
         expect(flattenedSqkdSels).toContain('.foo-sqkd-deadbeef');
         expect(flattenedSqkdSels).toContain('.bar-sqkd-fadedbabe');
         expect(flattenedSqkdSels).toContain('.baz-sqkd-beeffade');
@@ -391,14 +392,7 @@ describe('Squeaky flatten plugin', () => {
     });
 
     it('logs the squeaky selectors it makes top level', function () {
-      spyOn(console, 'log').and.callThrough();
-      return run(this.pseudoStyles, () => {
-        /* eslint-disable arrow-body-style, no-console */
-        const flattenedSqkdSels = console.log.calls.allArgs().filter((logged) => {
-          return logged.filter((entries) => {
-            return typeof entries === 'object';
-          });
-        })[0][2];
+      return checkSelectorLog(this.pseudoStyles, (flattenedSqkdSels) => {
         expect(flattenedSqkdSels).toContain('.foo-sqkd-deadbeef');
         expect(flattenedSqkdSels).toContain('.row-header');
         expect(flattenedSqkdSels).not.toContain('.bar-sqkd-fadedbabe');
