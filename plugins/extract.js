@@ -298,7 +298,7 @@ function extractSelectors(fileName, fileSelectors, stylePath) {
   stylesheets to follow the CSS modules paradigm
 */
 module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
-  const { scssPath, directories } = opts;
+  const { scssPath, directories, tmpStylePath = 'tmp/test.scss' } = opts;
   ({ fileWriter } = opts);
 
   findSelectorFiles.init({ directories });
@@ -320,7 +320,7 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
 
     // Handle duplicates that slipped through other phases
     handleDupeSels(sqkdSelectors);
-    runShell('cp', [scssPath, 'tmp/test.scss']);
+    runShell('cp', [scssPath, tmpStylePath]);
 
     // Map files to the selectors that are in them so files are opened once
     sqkdSelectors.forEach((sqkdSelector) => {
@@ -356,9 +356,9 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
         }
 
         // Temp file to workaround plugin from removing changes to the stylesheet at the end
-        const replaceCmd = 'sed -i "" "s/-sqkd-[a-z0-9]*//g" tmp/test.scss';
+        const replaceCmd = `sed -i "" "s/-sqkd-[a-z0-9]*//g" ${tmpStylePath}`;
         runShell('sh', ['-c', replaceCmd]);
-        runShell('mv', ['tmp/test.scss', scssPath]);
+        runShell('mv', [tmpStylePath, scssPath]);
       });
     });
   };

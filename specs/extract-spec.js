@@ -127,6 +127,17 @@ describe('Squeaky extract plugin', () => {
       });
     });
 
+    it('holds the result in an intermediary file', function (done) {
+      return run(this.dupeStyles, () => {
+        const cpCmd = this.shellCalls.filter(shCall => shCall[0] === 'cp');
+        const [, cpArgs] = cpCmd[0];
+        expect(cpArgs).toContain('tmp/test.scss');
+        expect(cpArgs).toContain(pluginOpts.scssPath);
+      }).then(() => {
+        done();
+      });
+    });
+
     it('preserves all changes', function (done) {
       return run(this.dupeStyles, () => {
         const [shellCmd] = this.shellCalls.slice(-1);
@@ -136,6 +147,37 @@ describe('Squeaky extract plugin', () => {
         expect(mvArgs[1]).toEqual(pluginOpts.scssPath);
       }).then(() => {
         done();
+      });
+    });
+
+    describe('with a different temporary path', () => {
+      beforeEach(function () {
+        this.runOpts = Object.assign({}, pluginOpts, {
+          tmpStylePath: 'public/foo.css',
+        });
+      });
+
+      it('holds the result in an intermediary file', function (done) {
+        return run(this.dupeStyles, () => {
+          const cpCmd = this.shellCalls.filter(shCall => shCall[0] === 'cp');
+          const [, cpArgs] = cpCmd[0];
+          expect(cpArgs).toContain('public/foo.css');
+          expect(cpArgs).toContain(pluginOpts.scssPath);
+        }, this.runOpts).then(() => {
+          done();
+        });
+      });
+
+      it('preserves all changes', function (done) {
+        return run(this.dupeStyles, () => {
+          const [shellCmd] = this.shellCalls.slice(-1);
+          const [mvCmd, mvArgs] = shellCmd;
+          expect(mvCmd).toEqual('mv');
+          expect(mvArgs[0]).toEqual('public/foo.css');
+          expect(mvArgs[1]).toEqual(pluginOpts.scssPath);
+        }, this.runOpts).then(() => {
+          done();
+        });
       });
     });
   });
