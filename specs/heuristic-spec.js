@@ -93,6 +93,11 @@ describe('Squeaky heuristic plugin', () => {
     this.fileName = this.fileName || 'app/assets/features/backbone/lightbox.coffee';
   });
 
+  afterAll(function () {
+    delete this.viewFiles;
+    delete this.fileName;
+  });
+
   beforeEach(function () {
     this.shellCalls = [];
     mock({

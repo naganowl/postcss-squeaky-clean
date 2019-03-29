@@ -40,6 +40,12 @@ describe('Squeaky extract plugin', () => {
     };
   });
 
+  afterAll(function () {
+    delete this.viewFiles;
+    delete this.fileContent;
+    delete this.fileObj;
+  });
+
   beforeEach(function () {
     this.shellCalls = [];
     this.fileObj[this.viewFiles[0]] = this.fileContent;

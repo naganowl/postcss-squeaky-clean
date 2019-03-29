@@ -75,6 +75,11 @@ describe('Squeaky clean plugin', () => {
     mock.restore();
   });
 
+  afterAll(function () {
+    delete this.viewFiles;
+    delete this.fileContent;
+  });
+
   checkContents();
 
   it('skips blacklisted classes', function () {
@@ -151,6 +156,10 @@ describe('Squeaky clean plugin', () => {
   describe('with a non-specified view file extension', () => {
     beforeAll(function () {
       this.viewFiles = ['dummy.ts'];
+    });
+
+    afterAll(function () {
+      delete this.viewFiles;
     });
 
     it('leaves the file alone', function () {
