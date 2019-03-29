@@ -13,9 +13,6 @@ const writeFileAsync = promisify(fs.writeFile);
 const readPromises = [];
 const writePromises = [];
 
-// Maps file name strings to an array of squeaky selectors found in them
-const fileMap = {};
-
 // Passed in method to change how files are written
 let fileWriter;
 
@@ -306,6 +303,8 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
   return function main(css) {
     const sqkdRegExp = /\.([\w-]+sqkd[\w-]+)/g;
     let sqkdSelectors = [];
+    // Maps file name strings to an array of squeaky selectors found in them
+    const fileMap = {};
 
     // Grab all the squeaky selectors
     css.walkRules((rule) => {
