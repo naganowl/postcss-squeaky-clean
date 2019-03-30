@@ -216,4 +216,73 @@ describe('Squeaky extract plugin', () => {
       });
     });
   });
+
+  describe('with a class selector in the middle of a string', () => {
+    beforeAll(function () {
+      this.fileContent = `
+        $el.removeClass('hidden bar-sqkd-fadedbabe');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+    });
+
+    it('interpolates the declaration', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('`hidden ${styles.bar}`');
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
+  describe('with a multi-word namespaced class selector', () => {
+    beforeAll(function () {
+      this.multiStyles = '.lightbox-header-sqkd-deadcafe { color: peru }';
+      this.fileContent = `
+        $el.removeClass('hidden lightbox-header-sqkd-deadcafe');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.multiStyles;
+      delete this.fileContent;
+    });
+
+    it('references the module selector correctly', function (done) {
+      return run(this.multiStyles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain("`hidden ${styles['lightbox-header']}`");
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
+  describe('with a CoffeeScript file', () => {
+    beforeAll(function () {
+      this.viewFiles = ['header.coffee'];
+      this.fileContent = `
+        $el.removeClass('hidden bar-sqkd-fadedbabe');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+      delete this.viewFiles;
+    });
+
+    it('interpolates the declaration', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('"hidden #{styles.bar}"');
+      }).then(() => {
+        done();
+      });
+    });
 });
