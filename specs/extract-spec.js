@@ -191,7 +191,7 @@ describe('Squeaky extract plugin', () => {
   describe('with an existing style dependency in a view file', () => {
     beforeAll(function () {
       this.styleCheck = true;
-      this.viewFiles = ['/table-row.scss'];
+      this.viewFiles = ['/table-row.js'];
       this.fileContent = `
         import styles from 'app/assets/stylesheets/row.scss'
         $el.removeClass('bar-sqkd-fadedbabe');
@@ -209,6 +209,7 @@ describe('Squeaky extract plugin', () => {
         const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
         expect(fileContent).not.toContain('-sqkd-');
         expect(fileContent).toContain('table_row_styles.bar');
+        expect(fileContent).toContain('import styles from');
         expect(fileContent).toContain('import table_row_styles from');
       }).then(() => {
         done();
