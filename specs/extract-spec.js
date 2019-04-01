@@ -232,7 +232,7 @@ describe('Squeaky extract plugin', () => {
       return run(styles, () => {
         const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
         expect(fileContent).not.toContain('-sqkd-');
-        expect(fileContent).toContain('`hidden ${styles.bar}`');
+        expect(fileContent).toContain('`hidden ${styles.bar}`'); // eslint-disable-line no-template-curly-in-string
       }).then(() => {
         done();
       });
@@ -256,7 +256,7 @@ describe('Squeaky extract plugin', () => {
       return run(this.multiStyles, () => {
         const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
         expect(fileContent).not.toContain('-sqkd-');
-        expect(fileContent).toContain("`hidden ${styles['lightbox-header']}`");
+        expect(fileContent).toContain("`hidden ${styles['lightbox-header']}`"); // eslint-disable-line no-template-curly-in-string
       }).then(() => {
         done();
       });
