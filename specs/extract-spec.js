@@ -285,4 +285,35 @@ describe('Squeaky extract plugin', () => {
         done();
       });
     });
+
+    describe('with an existing style dependency', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.origFile = this.viewFiles;
+        this.viewFiles = ['/header-row.coffee'];
+        this.styleCheck = true;
+        this.fileContent = `
+          styles = require('app/assets/stylesheets/row.scss')
+          $el.removeClass('bar-sqkd-fadedbabe');
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+        this.viewFiles = this.origFile;
+        delete this.styleCheck;
+      });
+
+      it('creates another style dependency', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain('header_row_styles.bar');
+          expect(fileContent).toContain('header_row_styles = require(');
+        }).then(() => {
+          done();
+        });
+      });
+    });
+  });
 });
