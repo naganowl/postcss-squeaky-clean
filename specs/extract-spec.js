@@ -286,7 +286,7 @@ describe('Squeaky extract plugin', () => {
       });
     });
 
-    describe('with an existing style dependency', () => {
+    describe('with an existing style dependency and multi-word file', () => {
       beforeAll(function () {
         this.origContent = this.fileContent;
         this.origFile = this.viewFiles;
@@ -318,9 +318,6 @@ describe('Squeaky extract plugin', () => {
       describe('with a style dependency in the middle of the file', () => {
         beforeAll(function () {
           this.origContent = this.fileContent;
-          this.origFile = this.viewFiles;
-          this.viewFiles = ['/header-row.coffee'];
-          this.styleCheck = true;
           this.fileContent = `
             styles = require('app/assets/stylesheets/row.scss')
             class RowView extends View
@@ -332,8 +329,6 @@ describe('Squeaky extract plugin', () => {
 
         afterAll(function () {
           this.fileContent = this.origContent;
-          this.viewFiles = this.origFile;
-          delete this.styleCheck;
         });
 
         it('creates another style dependency', function (done) {
