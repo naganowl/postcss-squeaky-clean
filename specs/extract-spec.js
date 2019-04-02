@@ -341,6 +341,29 @@ describe('Squeaky extract plugin', () => {
         });
       });
     });
+
+    describe('with jQuery interpolation', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          $el = $('<div class="spinner bar-sqkd-fadedbabe">');
+          $view.append($el)
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('properly interpolates the selector', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).toContain('$("<div class=\'spinner #{styles.bar}\'>")');
+        }).then(() => {
+          done();
+        });
+      });
+    });
   });
 
   describe('with an ECO file', () => {
