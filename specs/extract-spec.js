@@ -263,6 +263,37 @@ describe('Squeaky extract plugin', () => {
     });
   });
 
+  describe('with multiple namespaced class selectors on a line', () => {
+    beforeAll(function () {
+      this.multiStyles = `
+        .foo-sqkd-deadbeef {
+          color: peru;
+        }
+        .bar-sqkd-fadedbabe {
+          border: 0;
+        }
+      `;
+      this.fileContent = `
+        $el.removeClass('hidden foo-sqkd-deadbeef text-center bar-sqkd-fadedbabe');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.multiStyles;
+      delete this.fileContent;
+    });
+
+    it('references the module selector correctly', function (done) {
+      return run(this.multiStyles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('`hidden ${styles.foo} text-center ${styles.bar}`'); // eslint-disable-line no-template-curly-in-string
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
   describe('with a CoffeeScript file', () => {
     beforeAll(function () {
       this.viewFiles = ['header.coffee'];

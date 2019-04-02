@@ -140,7 +140,8 @@ function normalizeString(opts = {}) {
     // JS file
     if (jqInterpLine !== line) {
       return jqInterpLine;
-    } if (quote !== '`' && !new RegExp(`\`.*${quotedText.replace(new RegExp(quote, 'g'), '')}.*\``).test(line)) {
+    }
+    if (quote && quote !== '`' && !new RegExp(`\`.*${quotedText.replace(new RegExp(quote, 'g'), '')}.*\``).test(line)) {
       return quoteSwap(quote, '`', jqInterpLine);
     }
   }
