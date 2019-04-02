@@ -82,7 +82,7 @@ describe('Squeaky extract plugin', () => {
     return run(styles, () => {
       const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
       expect(fileContent).not.toContain('-sqkd-');
-      expect(fileContent).toContain('styles.bar');
+      expect(fileContent).toContain('(styles.bar)');
     }).then(() => {
       done();
     });
