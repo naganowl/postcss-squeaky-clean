@@ -347,4 +347,38 @@ describe('Squeaky extract plugin', () => {
       });
     });
   });
+
+  describe('with an ECO file', () => {
+    beforeAll(function () {
+      this.viewFiles = ['header.eco'];
+      this.fileContent = `
+        <div class="header bar-sqkd-fadedbabe"></div>
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+      delete this.viewFiles;
+    });
+
+    it('interpolates the declaration', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('"header <%= styles.bar %>"');
+      }).then(() => {
+        done();
+      });
+    });
+
+    it('adds the stylesheet as a dependency', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).toContain('styles = require(');
+        expect(fileContent).toContain(pluginOpts.scssPath);
+      }).then(() => {
+        done();
+      });
+    });
+  });
 });
