@@ -141,8 +141,15 @@ function normalizeString(opts = {}) {
     if (jqInterpLine !== line) {
       return jqInterpLine;
     }
-    if (quote && quote !== '`' && !new RegExp(`\`.*${quotedText.replace(new RegExp(quote, 'g'), '')}.*\``).test(line)) {
-      return quoteSwap(quote, '`', jqInterpLine);
+    if (quote && quote !== '`') {
+      const unquotedText = quotedText.replace(new RegExp(quote, 'g'), '');
+      const backtickSurround = new RegExp(`\`.*${unquotedText}.*\``).test(line);
+      const quoteSurround = new RegExp(`'<.*${unquotedText}.*'`).test(line);
+      const dblQuoteSurround = new RegExp(`"<.*${unquotedText}.*"`).test(line);
+      const spaceSurround = new RegExp(`\\s<.*${unquotedText}.*`).test(line);
+      if (!backtickSurround && !quoteSurround && !dblQuoteSurround && !spaceSurround) {
+        return quoteSwap(quote, '`', jqInterpLine);
+      }
     }
   }
 

@@ -294,6 +294,104 @@ describe('Squeaky extract plugin', () => {
     });
   });
 
+  describe('with an HTML fragment without interpolation', () => {
+    beforeAll(function () {
+      this.fileContent = `
+        $('table').append('<tr>' +
+          '<td class="check select-row bar-sqkd-fadedbabe"></td>' +
+        '</tr>');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+    });
+
+    it('leaves the quotes alone', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('\'<td class="check select-row ${styles.bar}"></td>\''); // eslint-disable-line no-template-curly-in-string
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
+  describe('with an HTML fragment without interpolation and outer double quotes', () => {
+    beforeAll(function () {
+      this.fileContent = `
+        $('table').append('<tr>' +
+          "<td class='check select-row bar-sqkd-fadedbabe'></td>" +
+        '</tr>');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+    });
+
+    it('leaves the quotes alone', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('"<td class=\'check select-row ${styles.bar}\'></td>"'); // eslint-disable-line no-template-curly-in-string
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
+  describe('with an HTML fragment with interpolation', () => {
+    beforeAll(function () {
+      const id = 1;
+      this.fileContent = `
+        $('table').append('<tr>' +
+          \`<td class="check select-row bar-sqkd-fadedbabe">${id}</td>\` +
+        '</tr>');
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+    });
+
+    it('leaves the quotes alone', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('`<td class="check select-row ${styles.bar}">1</td>`'); // eslint-disable-line no-template-curly-in-string
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
+  describe('with a multiline interpolated HTML fragment', () => {
+    beforeAll(function () {
+      const id = 2;
+      this.fileContent = `
+        $('table').append(\`<tr>
+          <td class="check select-row bar-sqkd-fadedbabe">${id}</td>
+        </tr>\`);
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+    });
+
+    it('leaves the quotes alone', function (done) {
+      return run(styles, () => {
+        const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+        expect(fileContent).not.toContain('-sqkd-');
+        expect(fileContent).toContain('<td class="check select-row ${styles.bar}">2</td>'); // eslint-disable-line no-template-curly-in-string
+      }).then(() => {
+        done();
+      });
+    });
+  });
+
   describe('with a CoffeeScript file', () => {
     beforeAll(function () {
       this.viewFiles = ['header.coffee'];
