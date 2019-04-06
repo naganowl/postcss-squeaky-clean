@@ -527,5 +527,131 @@ describe('Squeaky extract plugin', () => {
         done();
       });
     });
+
+    describe('with a variable', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <a class='<%= @clearLinkClassName %> clear-link bar-sqkd-fadedbabe'></a>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('interpolates the declaration', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain("'<%= @clearLinkClassName %> clear-link <%= styles.bar %>'");
+        }).then(() => {
+          done();
+        });
+      });
+    });
+
+    describe('with a namespaced selector as an argument to a function call', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <%= @svgIcon(iconAngleRight, 'icon-tiny bar-sqkd-fadedbabe icon-bold') %>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('interpolates the declaration', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain(' "icon-tiny #{styles.bar} icon-bold"');
+        }).then(() => {
+          done();
+        });
+      });
+    });
+
+    describe('with a namespaced selector as an argument to a function call', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <span class="state-indicator <%= Utils.camel('super-state bar-sqkd-fadedbabe') %>"></span>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('interpolates the declaration', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain('"state-indicator');
+          expect(fileContent).toContain('"super-state #{styles.bar}"');
+        }).then(() => {
+          done();
+        });
+      });
+    });
+
+    describe('with a namespaced selector conditionally added', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <div class="selected-text <%= "hidden bar-sqkd-fadedbabe" unless @alreadySelected %>">
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('interpolates the declaration', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain('"selected-text');
+          expect(fileContent).toContain('"hidden #{styles.bar}"');
+        }).then(() => {
+          done();
+        });
+      });
+    });
+
+    describe('with multiple namespaced selectors', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <div class="selected-text foo-sqkd-deadbeef <%= "hidden bar-sqkd-fadedbabe" unless @alreadySelected %>">
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('interpolates the declaration', function (done) {
+        const multiStyles = `
+          .bar-sqkd-fadedbabe {
+            color: aliceblue;
+          }
+          .foo-sqkd-deadbeef {
+            color: peru;
+          }
+        `;
+        return run(multiStyles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain('<%= styles.foo %>');
+          expect(fileContent).toContain('"hidden #{styles.bar}"');
+        }).then(() => {
+          done();
+        });
+      });
+    });
   });
 });
