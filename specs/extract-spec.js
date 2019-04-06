@@ -653,5 +653,37 @@ describe('Squeaky extract plugin', () => {
         });
       });
     });
+
+    describe('with CoffeeScript embedded before the namespaced selector', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <span class="<%= @cell.getIndicatorClass("cell-class bar-sqkd-fadedbabe") %> edit-box-link foo-sqkd-deadbeef"></span>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('interpolates the declaration', function (done) {
+        const multiStyles = `
+          .bar-sqkd-fadedbabe {
+            color: aliceblue;
+          }
+          .foo-sqkd-deadbeef {
+            color: peru;
+          }
+        `;
+        return run(multiStyles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).not.toContain('-sqkd-');
+          expect(fileContent).toContain('#{styles.bar}');
+          expect(fileContent).toContain('<%= styles.foo %>');
+        }).then(() => {
+          done();
+        });
+      });
+    });
   });
 });

@@ -19,9 +19,10 @@ let fileWriter;
 function isECOFnCall(opts) {
   // Different interpolation syntax is needed within a function declaration
   const { isEco, quoteMatch, line } = opts;
-  if (isEco) {
+  const [textBeforeMatch] = quoteMatch;
+  if (isEco && !textBeforeMatch.includes(')')) {
     // Check that the string is some argument (only or many) to function in ECO
-    return new RegExp(`<%=[\\s@\\w,(]+?.*${quoteMatch[0]}`).test(line);
+    return new RegExp(`<%=[\\s@\\w,(]+?.*${textBeforeMatch.replace(/\)/, '\\)')}`).test(line);
   }
 
   return false;
@@ -263,7 +264,7 @@ function extractSelectors(fileName, fileSelectors, stylePath) {
               // Single use selector
               changedLine = interpLine.replace(singleSelectorRE, decl);
             } else {
-              const coffeeInterp = /[#<]$/.test(quoteMatch[0]) && new RegExp(`<%=.+?${theSelector}`).test(changedLine);
+              const coffeeInterp = /[#<]$/.test(quoteMatch[0]) && new RegExp(`<%=.+?${theSelector}`).test(changedLine) && !new RegExp(`<%=.+?>.+?${theSelector}.+?>`).test(changedLine);
               if (coffeeInterp || isECOFnCall({ isEco, quoteMatch, line: changedLine })) {
                 // ECO double interpolation
                 styleDecl = declDecorate({ isCoffee: true, decl });
