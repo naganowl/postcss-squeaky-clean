@@ -307,7 +307,9 @@ function extractSelectors(fileName, fileSelectors, stylePath) {
   stylesheets to follow the CSS modules paradigm
 */
 module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
-  const { scssPath, directories, tmpStylePath = 'tmp/test.scss' } = opts;
+  const {
+    scssPath, directories, tmpStylePath = 'tmp/test.scss', serverViewRE = /\.e?rb$/,
+  } = opts;
   ({ fileWriter, tmpSelPath = 'tmp/newSelectors' } = opts);
 
   findSelectorFiles.init({ directories });
@@ -326,7 +328,7 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
       }, sqkdSelectors);
     });
 
-    const rbSqkdSelectors = [];
+    const serverSqkdSelectors = [];
     sqkdSelectors = uniq(sqkdSelectors);
 
     // Handle duplicates that slipped through other phases
@@ -337,8 +339,8 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
     sqkdSelectors.forEach((sqkdSelector) => {
       console.log(`Analyzing ${sqkdSelector}`); // eslint-disable-line no-console
       findSelectorFiles.find(sqkdSelector).forEach((sqkdFile) => {
-        if (/\.e?rb$/.test(sqkdFile)) {
-          rbSqkdSelectors.push(sqkdSelector);
+        if (serverViewRE.test(sqkdFile)) {
+          serverSqkdSelectors.push(sqkdSelector);
         } else {
           const fileSels = fileMap[sqkdFile];
           // Remove leading period in class selector
@@ -359,11 +361,11 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
 
     return Promise.all(readPromises).then(() => {
       Promise.all(writePromises).then(() => {
-        if (rbSqkdSelectors.length) {
+        if (serverSqkdSelectors.length) {
           console.log('\x1b[31m%s\x1b[0m', // eslint-disable-line no-console
-            'The following selectors are in ERB or Ruby files so should be removed/globalized:\n',
+            'The following selectors are in server view files so should be removed/globalized:\n',
             '\x1b[37m\x1b[0m',
-            uniq(rbSqkdSelectors));
+            uniq(serverSqkdSelectors));
         }
 
         // Temp file to workaround plugin from removing changes to the stylesheet at the end

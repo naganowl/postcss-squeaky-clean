@@ -740,11 +740,71 @@ describe('Squeaky extract plugin', () => {
       return run(styles, () => {
         /* eslint-disable arrow-body-style, no-console */
         const [loggedResult] = flatten(console.log.calls.allArgs()).filter((logged) => {
-          return logged.includes('ERB');
+          return logged.includes('server view');
         });
         expect(loggedResult).toContain('removed/globalized');
       }).then(() => {
         done();
+      });
+    });
+  });
+
+  describe('with a server view file pattern', () => {
+    beforeAll(function () {
+      this.viewFiles = ['header.py'];
+      this.fileContent = `
+        <div class="header bar-sqkd-fadedbabe"></div>
+      `;
+    });
+
+    beforeEach(function () {
+      this.runOpts = Object.assign({}, pluginOpts, {
+        serverViewRE: /\.py$/,
+      });
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+      delete this.viewFiles;
+    });
+
+    it('alerts of possible globals', function (done) {
+      spyOn(console, 'log').and.callThrough();
+      return run(styles, () => {
+        /* eslint-disable arrow-body-style, no-console */
+        const [loggedResult] = flatten(console.log.calls.allArgs()).filter((logged) => {
+          return logged.includes('server view');
+        });
+        expect(loggedResult).toContain('removed/globalized');
+      }, this.runOpts).then(() => {
+        done();
+      });
+    });
+
+    describe('with a file extension outside the specified pattern', () => {
+      beforeAll(function () {
+        this.origFiles = this.viewFiles;
+        this.viewFiles = ['header.rb'];
+      });
+
+      afterAll(function () {
+        this.viewFiles = this.origFiles;
+      });
+
+      it('will replace the namespaced selectors in that file', function (done) {
+        spyOn(console, 'log').and.callThrough();
+        return run(styles, () => {
+          /* eslint-disable arrow-body-style, no-console */
+          const [
+            openResult, writtenResult,
+          ] = flatten(console.log.calls.allArgs()).filter((logged) => {
+            return logged.includes('header.rb');
+          });
+          expect(openResult).toContain('selector replacement');
+          expect(writtenResult).toContain('has been written');
+        }, this.runOpts).then(() => {
+          done();
+        });
       });
     });
   });
