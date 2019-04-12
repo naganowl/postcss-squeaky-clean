@@ -16,6 +16,9 @@ const writePromises = [];
 // Passed in method to change how files are written
 let fileWriter;
 
+// Temporary file path string for where duplicate selectors will be stored
+let tmpSelPath;
+
 function isECOFnCall(opts) {
   // Different interpolation syntax is needed within a function declaration
   const { isEco, quoteMatch, line } = opts;
@@ -197,8 +200,8 @@ function handleDupeSels(sqkdArr) {
 
   const scriptPath = path.resolve(path.join(__dirname, '..', 'scripts', 'replace_selectors.sh'));
   runShell('sh', [scriptPath, selToReplace], { stdio: [null, 'inherit', null] });
-  const newSels = runShell('cat', ['tmp/newSelectors']);
-  runShell('rm', ['tmp/newSelectors']);
+  const newSels = runShell('cat', [tmpSelPath]);
+  runShell('rm', [tmpSelPath]);
 
   // Update squeaky selectors for processing within the plugin so they are properly
   // extracted from view files that use it.
@@ -305,7 +308,7 @@ function extractSelectors(fileName, fileSelectors, stylePath) {
 */
 module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
   const { scssPath, directories, tmpStylePath = 'tmp/test.scss' } = opts;
-  ({ fileWriter } = opts);
+  ({ fileWriter, tmpSelPath = 'tmp/newSelectors' } = opts);
 
   findSelectorFiles.init({ directories });
 

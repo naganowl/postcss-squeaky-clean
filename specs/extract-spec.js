@@ -144,6 +144,19 @@ describe('Squeaky extract plugin', () => {
       });
     });
 
+    it('stores the selectors in a temporary file that is cleaned up', function (done) {
+      return run(this.dupeStyles, () => {
+        const catCmd = this.shellCalls.filter(shCall => shCall[0] === 'cat');
+        const [, catArgs] = catCmd[0];
+        expect(catArgs).toContain('tmp/newSelectors');
+        const rmCmd = this.shellCalls.filter(shCall => shCall[0] === 'rm');
+        const [, rmArgs] = rmCmd[0];
+        expect(rmArgs).toContain('tmp/newSelectors');
+      }).then(() => {
+        done();
+      });
+    });
+
     it('preserves all changes', function (done) {
       return run(this.dupeStyles, () => {
         const [shellCmd] = this.shellCalls.slice(-1);
@@ -156,7 +169,7 @@ describe('Squeaky extract plugin', () => {
       });
     });
 
-    describe('with a different temporary path', () => {
+    describe('with a different temporary style path', () => {
       beforeEach(function () {
         this.runOpts = Object.assign({}, pluginOpts, {
           tmpStylePath: 'public/foo.css',
@@ -181,6 +194,27 @@ describe('Squeaky extract plugin', () => {
           expect(mvCmd).toEqual('mv');
           expect(mvArgs[0]).toEqual('public/foo.css');
           expect(mvArgs[1]).toEqual(pluginOpts.scssPath);
+        }, this.runOpts).then(() => {
+          done();
+        });
+      });
+    });
+
+    describe('with a different temporary selector path', () => {
+      beforeEach(function () {
+        this.runOpts = Object.assign({}, pluginOpts, {
+          tmpSelPath: 'public/bar',
+        });
+      });
+
+      it('uses the specified file', function (done) {
+        return run(this.dupeStyles, () => {
+          const catCmd = this.shellCalls.filter(shCall => shCall[0] === 'cat');
+          const [, catArgs] = catCmd[0];
+          expect(catArgs).toContain('public/bar');
+          const rmCmd = this.shellCalls.filter(shCall => shCall[0] === 'rm');
+          const [, rmArgs] = rmCmd[0];
+          expect(rmArgs).toContain('public/bar');
         }, this.runOpts).then(() => {
           done();
         });
