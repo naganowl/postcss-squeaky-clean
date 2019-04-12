@@ -130,6 +130,30 @@ Selector specificity can be observed with
 
 `node examples/scss-parser.js path/to/stylesheet.scss --specify`
 
+## `extract` plugin
+Once styles have been flattened to a single level at the top (via the `flatten` plugin above), the 1:1 relation between each namespaced selector in the stylesheet
+and the view templates they are used in means the selectors can be extracted as dependency in said views as a CSS module. This is done for all view files that
+are run through webpack, so files that are server side views (such as those similar to `ERB`) will be left out. Selectors that belong in those types of files
+will be alerted so they can be isolated into their own stylesheets in hopes that those views can be ported into the webpack asset server.
+
+The following are the options it takes
+
+### `scssPath`
+
+A string representing the stylesheet path to analyze
+
+### `directories`
+
+An array of strings representing file paths which contain the top level directories which the plugin will recursive analyze for class selectors
+
+### `tmpStylePath`
+
+A string indicating the temporary file path that will be used to store the intermediary stylesheet selectors such as duplication handling
+
+### `serverViewRE`
+
+A regular expression used to specify which view files belong to the server, disconnected from the webpack asset server
+
 # Linting
 
 To check for any dangling namespaced selectors, the following command can be run
