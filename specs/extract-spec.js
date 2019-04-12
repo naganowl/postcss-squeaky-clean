@@ -2,6 +2,7 @@ const mock = require('mock-fs');
 const mockSpawn = require('mock-spawn');
 const fs = require('fs');
 const path = require('path');
+const flatten = require('lodash.flatten');
 
 const postcss = require('postcss');
 const plugin = require('../plugins/extract');
@@ -717,6 +718,33 @@ describe('Squeaky extract plugin', () => {
         }).then(() => {
           done();
         });
+      });
+    });
+  });
+
+  describe('with an ERB file', () => {
+    beforeAll(function () {
+      this.viewFiles = ['header.erb'];
+      this.fileContent = `
+        <div class="header bar-sqkd-fadedbabe"></div>
+      `;
+    });
+
+    afterAll(function () {
+      delete this.fileContent;
+      delete this.viewFiles;
+    });
+
+    it('alerts of possible globals', (done) => {
+      spyOn(console, 'log').and.callThrough();
+      return run(styles, () => {
+        /* eslint-disable arrow-body-style, no-console */
+        const [loggedResult] = flatten(console.log.calls.allArgs()).filter((logged) => {
+          return logged.includes('ERB');
+        });
+        expect(loggedResult).toContain('removed/globalized');
+      }).then(() => {
+        done();
       });
     });
   });

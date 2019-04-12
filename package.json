@@ -40,6 +40,7 @@
     "eslint-plugin-react": "^7.12.4",
     "jasmine": "^3.3.1",
     "lodash.clonedeep": "^4.5.0",
+    "lodash.flatten": "^4.4.0",
     "mock-fs": "^4.8.0",
     "mock-spawn": "^0.2.6",
     "postcss-nested": "1.0.1",
