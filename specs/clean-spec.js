@@ -366,21 +366,7 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
-  describe('with JSX properties referencing selectors to be namespaced', () => {
-    beforeAll(function () {
-      this.viewFiles = ['table.js'];
-      this.fileContent = `
-        <TableRow>
-          {this.props.columns.map(column => (
-            <TableCell
-              className={column.className || this.props.cellClassName}
-            >
-            </TableCell>
-          ))}
-        </TableRow>
-      `;
-    });
-
+  describe('with generic namespace selectors', () => {
     beforeEach(function () {
       this.genericStyles = `
         .column {
@@ -389,15 +375,31 @@ describe('Squeaky clean plugin', () => {
       `;
     });
 
-    afterAll(function () {
-      delete this.viewFiles;
-      delete this.fileContent;
-    });
+    describe('with JSX properties referencing selectors to be namespaced', () => {
+      beforeAll(function () {
+        this.viewFiles = ['table.js'];
+        this.fileContent = `
+          <TableRow>
+            {this.props.columns.map(column => (
+              <TableCell
+                className={column.className || this.props.cellClassName}
+              >
+              </TableCell>
+            ))}
+          </TableRow>
+        `;
+      });
 
-    it('avoids changing the view file', function () {
-      return run(this.genericStyles, (result) => {
-        expect(result.css).toContain('column-sqkd');
-        expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+      afterAll(function () {
+        delete this.viewFiles;
+        delete this.fileContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
       });
     });
 
@@ -407,6 +409,110 @@ describe('Squeaky clean plugin', () => {
         this.fileContent = `
           <TableRow key={column.id} className={column.className || this.props.columnClassName} data-selector={column.selector}>
           </TableRow>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
+
+    describe('with a property sharing the same name as selector', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          columns.map(column => ({ ...column, className: column.archived ? styles.archived : null }))
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
+
+    describe('with ECO interpolation', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <td title="<%= title.replace(/"/g, "'") %>" class='<%= column.value.toLowerCase() %>-attribute<%= if column.disableSelectRow? then ' no-select' else '' %>'>
+          <td class='<%= column.value.toLowerCase() %>-custom<%= if column.disableSelectRow? then ' no-select' else '' %>'>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
+
+    describe('with an instance property name', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          _buildSidePanel: ->
+            className: @column.get('sidePanelClass')
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
+
+    describe('with a property key', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          className: '',
+          column: undefined,
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
+
+    describe('with a variable hash reference', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          iconClassName: icon_class_name,
+          additionalClasses: column[:additionalClasses] || '',
         `;
       });
 
