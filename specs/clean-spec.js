@@ -366,6 +366,63 @@ describe('Squeaky clean plugin', () => {
     checkContents();
   });
 
+  describe('with JSX properties referencing selectors to be namespaced', () => {
+    beforeAll(function () {
+      this.viewFiles = ['table.js'];
+      this.fileContent = `
+        <TableRow>
+          {this.props.columns.map(column => (
+            <TableCell
+              className={column.className || this.props.cellClassName}
+            >
+            </TableCell>
+          ))}
+        </TableRow>
+      `;
+    });
+
+    beforeEach(function () {
+      this.genericStyles = `
+        .column {
+          float: right;
+        }
+      `;
+    });
+
+    afterAll(function () {
+      delete this.viewFiles;
+      delete this.fileContent;
+    });
+
+    it('avoids changing the view file', function () {
+      return run(this.genericStyles, (result) => {
+        expect(result.css).toContain('column-sqkd');
+        expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+      });
+    });
+
+    describe('inlined with other JSX properties', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          <TableRow key={column.id} className={column.className || this.props.columnClassName} data-selector={column.selector}>
+          </TableRow>
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
+  });
+
   describe('with a composed stylesheet', () => {
     const composeOpts = Object.assign({}, pluginOpts, { fileExts: 'scss' });
 

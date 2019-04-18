@@ -127,7 +127,7 @@ function replaceContents(contents, onlyClass, hash, file) {
   if (/\.scss$/.test(file)) {
     replacedContents = contents.replace(new RegExp(`(composes:\\s+)(${classSelectorCharacters}+)(?=from)`, 'g'), replacer);
   } else {
-    replacedContents = contents.replace(new RegExp(`([cCk]lass(?:Names?|es)?[:=][^(:]+?)(\\w${classSelectorCharacters}+)`, 'g'), replacer);
+    replacedContents = contents.replace(new RegExp(`([cCk]lass(?:Names?|es)?[:=][^({:]+?)(\\w${classSelectorCharacters}+)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`((?:(?:add|remove|toggle)Class(?:SVG)?)(?:\\s|\\()['"])(${classSelectorCharacters}+)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`([cCk]lass(?:es)?.+?=>.+?)(\\w${classSelectorCharacters}*)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`(class=['"]${classSelectorCharacters}+?<%=.+?['"])(\\w${classSelectorCharacters}+)(['"]\\s+(?:if|unless))`, 'g'), replacer);
