@@ -131,8 +131,8 @@ function replaceContents(contents, onlyClass, hash, file) {
     replacedContents = replacedContents.replace(new RegExp(`((?:(?:add|remove|toggle)Class(?:SVG)?)(?:\\s|\\()['"])(${classSelectorCharacters}+)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`([cCk]lass(?:es)?.+?=>.+?)(\\w${classSelectorCharacters}*)`, 'g'), replacer);
     replacedContents = replacedContents.replace(new RegExp(`(class=['"]${classSelectorCharacters}+?<%=.+?['"])(\\w${classSelectorCharacters}+)(['"]\\s+(?:if|unless))`, 'g'), replacer);
-    replacedContents = replacedContents.replace(new RegExp('(\\sclassName:\\s+->[\\n\\r]+)(.+[\\n\\r])+', 'g'), dynamicClassReplacer);
     replacedContents = replacedContents.replace(new RegExp(`([cC]lass(?:Names?)?\\s+?=.+?['"])(\\w${classSelectorCharacters}+?)(['"])`, 'g'), replacer);
+    replacedContents = replacedContents.replace(new RegExp('(\\sclassName:\\s+->[\\n\\r]+?)(.+?[\\n\\r])+?', 'g'), dynamicClassReplacer);
 
     regExps.forEach((re) => {
       replacedContents = replacedContents.replace(new RegExp(`(${re})(\\w${classSelectorCharacters}+)`, 'g'), replacer);

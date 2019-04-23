@@ -527,6 +527,29 @@ describe('Squeaky clean plugin', () => {
         });
       });
     });
+
+    describe('with CoffeeScript function values', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          className: ->
+            "#{_.result(ResourceTitle.prototype, 'className')} #{styles['title1-cell']}"
+          roleName: ->
+            @model.get('column')
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
   });
 
   describe('with a composed stylesheet', () => {
