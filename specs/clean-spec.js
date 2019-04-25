@@ -550,6 +550,26 @@ describe('Squeaky clean plugin', () => {
         });
       });
     });
+
+    describe('with generic CSS modules reference', () => {
+      beforeAll(function () {
+        this.origContent = this.fileContent;
+        this.fileContent = `
+          headerClassName: styles['column'],
+        `;
+      });
+
+      afterAll(function () {
+        this.fileContent = this.origContent;
+      });
+
+      it('avoids changing the view file', function () {
+        return run(this.genericStyles, (result) => {
+          expect(result.css).toContain('column-sqkd');
+          expect(fs.existsSync(this.viewFiles[0])).toBeFalsy();
+        });
+      });
+    });
   });
 
   describe('with a composed stylesheet', () => {
