@@ -556,7 +556,7 @@ describe('Squeaky extract plugin', () => {
     it('adds the stylesheet as a dependency', function (done) {
       return run(styles, () => {
         const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
-        expect(fileContent).toContain('styles = require(');
+        expect(fileContent).toContain('<% styles = require(');
         expect(fileContent).toContain(pluginOpts.scssPath);
       }).then(() => {
         done();
