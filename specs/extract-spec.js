@@ -479,6 +479,30 @@ describe('Squeaky extract plugin', () => {
         });
       });
 
+      describe('with pre-existing style dependency', () => {
+        beforeAll(function () {
+          this.origFiles = this.viewFiles;
+          this.viewFiles = ['/row.coffee'];
+          this.runOpts = Object.assign({}, pluginOpts, {
+            scssPath: 'app/assets/stylesheets/row.scss',
+          });
+        });
+
+        afterAll(function () {
+          this.viewFiles = this.origFiles;
+          delete this.runOpts;
+        });
+
+        it('avoids creating another style dependency', function (done) {
+          return run(styles, () => {
+            const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+            expect(fileContent.indexOf('styles =')).toEqual(fileContent.lastIndexOf('styles ='));
+          }, this.runOpts).then(() => {
+            done();
+          });
+        });
+      });
+
       describe('with a style dependency in the middle of the file', () => {
         beforeAll(function () {
           this.origContent = this.fileContent;

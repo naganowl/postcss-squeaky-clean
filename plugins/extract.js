@@ -242,7 +242,7 @@ function extractSelectors(fileName, fileSelectors, stylePath) {
         let changedLine = line;
 
         // Stylesheet path reference is agnostic amongst file types
-        if (new RegExp(`/${onlyFile}\\.scss`).test(line)) {
+        if (new RegExp(`/${onlyFile}\\.s?css`).test(line)) {
           addStyleDep = false;
         }
 
