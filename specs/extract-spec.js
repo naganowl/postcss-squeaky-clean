@@ -63,6 +63,8 @@ describe('Squeaky extract plugin', () => {
       // Result of checking file for a stylesheet declaration
       if (shellCmd === 'grep' && grepContent.includes('styles =')) {
         stdout = this.styleCheck;
+      } else if (shellCmd === 'cat') {
+        stdout = this.loggedSel;
       } else {
         stdout = this.viewFiles;
       }
@@ -110,6 +112,10 @@ describe('Squeaky extract plugin', () => {
   });
 
   describe('with duplicate base selectors', () => {
+    beforeAll(function () {
+      this.loggedSel = 'row1-sqkd-fadefade\n';
+    });
+
     beforeEach(function () {
       this.dupeStyles = `
         .row-sqkd-beefbeef {
@@ -119,6 +125,10 @@ describe('Squeaky extract plugin', () => {
           border: 0;
         }
       `;
+    });
+
+    afterAll(function () {
+      delete this.loggedSel;
     });
 
     it('handles them with a shell script', function (done) {
@@ -165,6 +175,21 @@ describe('Squeaky extract plugin', () => {
         expect(mvCmd).toEqual('mv');
         expect(mvArgs[0]).toEqual('tmp/test.scss');
         expect(mvArgs[1]).toEqual(pluginOpts.scssPath);
+      }).then(() => {
+        done();
+      });
+    });
+
+    it('analyzes the duplicates in view files', function (done) {
+      spyOn(console, 'log').and.callThrough();
+      return run(this.dupeStyles, () => {
+        /* eslint-disable arrow-body-style, no-console */
+        const analyzedSel = flatten(console.log.calls.allArgs()).filter((logged) => {
+          return logged.includes('Analyzing');
+        }).map((aSel) => {
+          return aSel.split(' ').pop();
+        });
+        expect(analyzedSel).toContain('.row1-sqkd-fadefade');
       }).then(() => {
         done();
       });
