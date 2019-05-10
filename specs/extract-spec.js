@@ -250,6 +250,24 @@ describe('Squeaky extract plugin', () => {
         done();
       });
     });
+
+    describe('with a style directory pattern', () => {
+      beforeEach(function () {
+        this.runOpts = Object.assign({}, pluginOpts, {
+          scssPath: this.scssPath || 'frontend/stylesheets/table.scss',
+          styleDirRE: /frontend\/stylesheets.+/,
+        });
+      });
+
+      it('adds the stylesheet as a dependency', function (done) {
+        return run(styles, () => {
+          const fileContent = fs.readFileSync(this.viewFiles[0]).toString();
+          expect(fileContent).toContain(this.runOpts.scssPath);
+        }, this.runOpts).then(() => {
+          done();
+        });
+      });
+    });
   });
 
   describe('with a class selector in the middle of a string', () => {

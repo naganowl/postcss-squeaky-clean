@@ -19,6 +19,9 @@ let fileWriter;
 // Temporary file path string for where duplicate selectors will be stored
 let tmpSelPath;
 
+// Regular expression for where stylesheets are located
+let styleDirRE;
+
 function isECOFnCall(opts) {
   // Different interpolation syntax is needed within a function declaration
   const { isEco, quoteMatch, line } = opts;
@@ -51,7 +54,7 @@ function includeStyleDep(opts = {}) {
   const {
     isEco, isCoffee, newContents, stylePath, stylesVariable, lastDepIdx,
   } = opts;
-  const appStylePath = (stylePath.match(/app\/assets.+/) || [])[0];
+  const appStylePath = (stylePath.match(styleDirRE) || [])[0];
   const coffeeDep = `${stylesVariable} = require('${appStylePath}')`;
   let styledContent;
 
@@ -310,7 +313,7 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
   const {
     scssPath, directories, tmpStylePath = 'tmp/test.scss', serverViewRE = /\.e?rb$/,
   } = opts;
-  ({ fileWriter, tmpSelPath = 'tmp/newSelectors' } = opts);
+  ({ fileWriter, tmpSelPath = 'tmp/newSelectors', styleDirRE = /app\/assets.+/, } = opts);
 
   findSelectorFiles.init({ directories });
 
