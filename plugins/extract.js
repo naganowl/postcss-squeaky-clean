@@ -313,7 +313,7 @@ module.exports = postcss.plugin('squeakyExtractPlugin', (opts = {}) => {
   const {
     scssPath, directories, tmpStylePath = 'tmp/test.scss', serverViewRE = /\.e?rb$/,
   } = opts;
-  ({ fileWriter, tmpSelPath = 'tmp/newSelectors', styleDirRE = /app\/assets.+/, } = opts);
+  ({ fileWriter, tmpSelPath = 'tmp/newSelectors', styleDirRE = /app\/assets.+/ } = opts);
 
   findSelectorFiles.init({ directories });
 
