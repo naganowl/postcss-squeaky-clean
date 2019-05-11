@@ -1,4 +1,4 @@
-# postcss-squeaky-clean
+# postcss-squeaky-clean [![Build Status](https://travis-ci.com/naganowl/postcss-squeaky-clean.svg?branch=master)](https://travis-ci.com/naganowl/postcss-squeaky-clean)
 A series of [PostCSS](https://github.com/postcss/postcss) plugins to transition global [SCSS](http://sass-lang.com/) stylesheets into [CSS modules](https://github.com/css-modules/css-modules)
 
 ## Overview
